@@ -1,24 +1,958 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta name="description" content="PHM 2018 Ion Mill Etch 데이터를 활용한 반도체 식각설비 고장 전 상태 분석 및 GRU 잔여시간 예측 프로젝트" />
-<title>Semiconductor Equipment AI Project | Kim Chaea</title>
-<style>
-:root{--bg:#f6f7f9;--card:#fff;--text:#16181d;--muted:#68707d;--line:#e6e8ec;--dark:#111827;--accent:#d92d20;--soft:#fff4f2;--blue:#f1f6ff;--max:1100px}
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",Arial,sans-serif;color:var(--text);background:var(--bg);line-height:1.68}a{color:inherit}.wrap{width:min(calc(100% - 40px),var(--max));margin:auto}nav{position:sticky;top:0;z-index:10;background:rgba(246,247,249,.93);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}.nav{height:64px;display:flex;align-items:center;justify-content:space-between}.brand{font-size:14px;font-weight:800}.links{display:flex;gap:20px;font-size:13px;color:var(--muted)}.links a{text-decoration:none}.hero{padding:92px 0 72px}.eyebrow{font-size:12px;font-weight:800;letter-spacing:.12em;color:var(--accent);margin-bottom:18px}h1{margin:0;max-width:900px;font-size:clamp(38px,6vw,66px);line-height:1.08;letter-spacing:-.045em}.lead{max-width:800px;margin-top:24px;font-size:clamp(17px,2vw,21px);color:#4f5662}.chips{display:flex;flex-wrap:wrap;gap:9px;margin-top:28px}.chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 12px;font-size:12px;font-weight:700;color:#4f5662}.hero-grid,.grid2,.grid3,.results{display:grid;gap:18px}.hero-grid{grid-template-columns:1.15fr .85fr;margin-top:52px}.grid2{grid-template-columns:repeat(2,1fr)}.grid3{grid-template-columns:repeat(3,1fr)}.results{grid-template-columns:.9fr 1.1fr}.metric{background:var(--dark);color:white;border-radius:24px;padding:34px;min-height:245px;display:flex;flex-direction:column;justify-content:space-between}.metric-label{font-size:13px;color:#bcc3cf;font-weight:700}.metric-big{font-size:clamp(48px,8vw,82px);font-weight:900;letter-spacing:-.06em;line-height:1}.metric-big span{color:#ff675d}.metric-sub{font-size:14px;color:#d8dce4}.hero-note,.card,.number,.bars{background:#fff;border:1px solid var(--line);border-radius:20px;padding:28px}.hero-note{display:flex;flex-direction:column;justify-content:center}.hero-note strong{font-size:19px}.hero-note p,.card p{margin:10px 0 0;color:var(--muted);font-size:14px}section{padding:76px 0;border-top:1px solid var(--line)}.kicker{font-size:12px;font-weight:800;color:var(--accent);letter-spacing:.1em}h2{font-size:clamp(28px,4vw,42px);line-height:1.18;letter-spacing:-.035em;margin:9px 0 16px}.intro{max-width:840px;color:var(--muted);font-size:16px;margin:0 0 30px}.card h3{margin:0;font-size:18px}.pipeline{display:grid;grid-template-columns:repeat(6,1fr);gap:9px;margin-top:28px}.step{background:white;border:1px solid var(--line);border-radius:16px;padding:18px 12px;min-height:116px;display:flex;flex-direction:column;justify-content:space-between}.step-num{font-size:11px;color:var(--accent);font-weight:900}.step-name{font-size:13px;font-weight:800;line-height:1.35}.callout{background:var(--blue);border:1px solid #dce8ff;border-radius:18px;padding:22px 24px;margin-top:22px;font-size:14px}.callout strong{display:block;margin-bottom:5px}.label{font-size:13px;color:var(--muted);font-weight:700}.big{font-size:48px;font-weight:900;letter-spacing:-.05em;margin:5px 0}.delta{font-size:15px;font-weight:800;color:var(--accent)}.bar-row{margin-bottom:22px}.bar-title{display:flex;justify-content:space-between;font-size:13px;font-weight:800;margin-bottom:8px}.track{height:13px;border-radius:99px;background:#edf0f3;overflow:hidden}.fill{height:100%;background:#111827;border-radius:99px}.fill.ai{background:var(--accent)}table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden}th,td{padding:15px 16px;text-align:left;border-bottom:1px solid var(--line);font-size:13px}th{font-size:12px;color:var(--muted);background:#fafbfc}tr:last-child td{border-bottom:0}.good{font-weight:800;color:#137333}.warning{background:var(--soft);border:1px solid #ffd9d4;border-radius:18px;padding:22px 24px;margin-top:22px}.warning strong{display:block;margin-bottom:7px}.insight{border-left:4px solid var(--accent);padding:4px 0 4px 18px;margin:28px 0;font-size:20px;font-weight:800}.limits{display:grid;gap:12px}.limit{background:#fff;border:1px solid var(--line);border-radius:15px;padding:17px 19px;display:grid;grid-template-columns:28px 1fr;gap:10px;font-size:14px}.limit b{color:var(--accent)}footer{padding:48px 0 70px;color:var(--muted);font-size:12px}.foot{display:flex;justify-content:space-between;gap:20px;align-items:flex-end}.source{max-width:760px}
-@media(max-width:850px){.hero-grid,.grid2,.grid3,.results{grid-template-columns:1fr}.pipeline{grid-template-columns:repeat(2,1fr)}.links{display:none}}@media(max-width:520px){.wrap{width:min(calc(100% - 28px),var(--max))}.hero{padding:64px 0 52px}section{padding:58px 0}.pipeline{grid-template-columns:1fr}th,td{padding:12px 10px;font-size:12px}}
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="PHM 2018 Ion Mill Etch 데이터를 이용해 설비 고장 조기예측과 RUL 예측을 시도하고, 평가 방법을 다시 설계한 과정을 정리한 개인 프로젝트 기록." />
+  <title>PHM 2018 Ion Mill Etch — 설비 고장 예측 실험 기록</title>
+  <style>
+    :root{
+      --bg:#f6f7f8;
+      --paper:#ffffff;
+      --ink:#1f252b;
+      --muted:#66717c;
+      --line:#dfe4e8;
+      --line-strong:#c8d0d7;
+      --accent:#526779;
+      --accent-soft:#eef2f5;
+      --note:#f8fafb;
+      --good:#304d3b;
+      --warn:#6c5638;
+      --max:1180px;
+      --reading:820px;
+      --radius:10px;
+      --shadow:0 1px 2px rgba(17,24,39,.04);
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--ink);
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR","Apple SD Gothic Neo",Arial,sans-serif;
+      font-size:16px;
+      line-height:1.82;
+      letter-spacing:-.012em;
+    }
+    a{color:inherit;text-decoration:none}
+    img{max-width:100%;height:auto;display:block}
+    code{
+      font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace;
+      font-size:.91em;
+      background:#f1f3f5;
+      padding:.08em .35em;
+      border-radius:4px;
+    }
+
+    .site-header{
+      background:var(--paper);
+      border-bottom:1px solid var(--line);
+    }
+    .hero{
+      max-width:var(--max);
+      margin:0 auto;
+      padding:76px 28px 62px;
+    }
+    .eyebrow{
+      margin:0 0 14px;
+      color:var(--muted);
+      font-size:13px;
+      font-weight:650;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+    }
+    h1{
+      margin:0;
+      max-width:900px;
+      font-size:clamp(34px,5vw,58px);
+      line-height:1.17;
+      letter-spacing:-.045em;
+      font-weight:740;
+    }
+    .hero-lead{
+      max-width:760px;
+      margin:24px 0 0;
+      color:#4c5863;
+      font-size:18px;
+      line-height:1.8;
+    }
+    .meta{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px 18px;
+      margin-top:30px;
+      color:var(--muted);
+      font-size:13px;
+    }
+    .meta span::before{content:"— ";color:#9aa3ab}
+
+    .shell{
+      max-width:var(--max);
+      margin:0 auto;
+      display:grid;
+      grid-template-columns:220px minmax(0,var(--reading));
+      gap:56px;
+      padding:54px 28px 100px;
+      justify-content:center;
+      align-items:start;
+    }
+    .toc{
+      position:sticky;
+      top:24px;
+      padding-top:4px;
+      font-size:13px;
+      line-height:1.5;
+    }
+    .toc-title{
+      color:var(--muted);
+      font-weight:700;
+      margin-bottom:12px;
+      letter-spacing:.04em;
+    }
+    .toc a{
+      display:block;
+      color:#65717b;
+      padding:7px 0;
+      border-left:1px solid var(--line);
+      padding-left:13px;
+    }
+    .toc a:hover{color:var(--ink);border-left-color:var(--accent)}
+    .toc .sub{padding-left:25px;font-size:12px}
+
+    main{min-width:0}
+    section{
+      scroll-margin-top:30px;
+      margin:0 0 86px;
+    }
+    .section-kicker{
+      margin:0 0 8px;
+      color:var(--accent);
+      font-size:13px;
+      font-weight:740;
+      letter-spacing:.08em;
+    }
+    h2{
+      margin:0 0 26px;
+      font-size:31px;
+      line-height:1.28;
+      letter-spacing:-.035em;
+    }
+    h3{
+      margin:48px 0 14px;
+      font-size:22px;
+      line-height:1.42;
+      letter-spacing:-.026em;
+    }
+    p{margin:0 0 18px}
+    .lead{
+      font-size:18px;
+      color:#46525c;
+      line-height:1.85;
+    }
+
+    .opening-question{
+      margin:30px 0 34px;
+      padding:22px 24px;
+      border-left:3px solid var(--accent);
+      background:var(--accent-soft);
+      font-size:20px;
+      font-weight:650;
+      letter-spacing:-.02em;
+    }
+
+    .timeline{
+      margin:34px 0 0;
+      border-top:1px solid var(--line-strong);
+    }
+    .timeline-row{
+      display:grid;
+      grid-template-columns:132px 1fr;
+      gap:18px;
+      padding:18px 0;
+      border-bottom:1px solid var(--line);
+    }
+    .timeline-row strong{font-size:14px}
+    .timeline-row span{color:#56626d}
+
+    .turn{
+      margin:36px 0 8px;
+      padding:22px 24px;
+      background:var(--note);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+    }
+    .turn-label{
+      display:block;
+      margin-bottom:7px;
+      color:var(--accent);
+      font-size:12px;
+      font-weight:800;
+      letter-spacing:.08em;
+    }
+    .turn p:last-child{margin-bottom:0}
+
+    .figure{
+      margin:32px 0 38px;
+      padding:12px;
+      background:var(--paper);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+    }
+    .figure img{
+      width:100%;
+      border-radius:6px;
+      background:#fff;
+    }
+    figcaption{
+      padding:12px 4px 2px;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.65;
+    }
+    .figure-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:16px;
+      margin:32px 0 38px;
+    }
+    .figure-grid .figure{margin:0}
+
+    .table-wrap{
+      overflow-x:auto;
+      margin:24px 0 32px;
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      background:var(--paper);
+      box-shadow:var(--shadow);
+    }
+    table{
+      width:100%;
+      border-collapse:collapse;
+      min-width:560px;
+      font-size:14px;
+      line-height:1.55;
+    }
+    th,td{
+      padding:12px 15px;
+      text-align:left;
+      border-bottom:1px solid var(--line);
+      vertical-align:top;
+    }
+    th{
+      background:#f7f8f9;
+      color:#4d5963;
+      font-weight:700;
+      white-space:nowrap;
+    }
+    tr:last-child td{border-bottom:0}
+    td.num{text-align:right;font-variant-numeric:tabular-nums}
+    .best{font-weight:760}
+
+    .metric-row{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:12px;
+      margin:26px 0 32px;
+    }
+    .metric{
+      padding:18px 18px 16px;
+      background:var(--paper);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+    }
+    .metric .label{color:var(--muted);font-size:12px;margin-bottom:6px}
+    .metric .value{font-size:23px;font-weight:760;letter-spacing:-.03em}
+    .metric .desc{margin-top:4px;color:var(--muted);font-size:12px;line-height:1.55}
+
+    .plain-note{
+      color:#53606a;
+      padding:16px 18px;
+      border-left:2px solid var(--line-strong);
+      margin:24px 0;
+      background:#fafbfc;
+    }
+
+    details{
+      margin:24px 0;
+      border-top:1px solid var(--line);
+      border-bottom:1px solid var(--line);
+      padding:14px 0;
+    }
+    summary{
+      cursor:pointer;
+      color:#4f5d68;
+      font-size:14px;
+      font-weight:680;
+    }
+    details .detail-body{
+      margin-top:14px;
+      color:#5a6670;
+      font-size:14px;
+    }
+
+    .quote{
+      margin:38px 0 0;
+      padding:24px 0 2px;
+      border-top:1px solid var(--line-strong);
+      font-size:24px;
+      line-height:1.55;
+      letter-spacing:-.035em;
+      font-weight:650;
+    }
+
+    .footnotes{
+      margin-top:58px;
+      padding-top:28px;
+      border-top:1px solid var(--line);
+      color:var(--muted);
+      font-size:13px;
+    }
+    .footnotes p{margin-bottom:9px}
+
+    footer{
+      border-top:1px solid var(--line);
+      background:var(--paper);
+    }
+    .footer-inner{
+      max-width:var(--max);
+      margin:0 auto;
+      padding:26px 28px 44px;
+      color:#7a848d;
+      font-size:12px;
+    }
+
+    @media (max-width:940px){
+      .shell{grid-template-columns:1fr;gap:0}
+      .toc{
+        position:relative;
+        top:auto;
+        display:flex;
+        gap:8px;
+        overflow-x:auto;
+        margin:0 0 46px;
+        padding:0 0 12px;
+        white-space:nowrap;
+      }
+      .toc-title{display:none}
+      .toc a,.toc .sub{
+        border:1px solid var(--line);
+        border-radius:999px;
+        padding:7px 11px;
+        background:var(--paper);
+      }
+    }
+    @media (max-width:680px){
+      body{font-size:15px}
+      .hero{padding:52px 20px 42px}
+      .shell{padding:34px 20px 72px}
+      .figure-grid{grid-template-columns:1fr}
+      .metric-row{grid-template-columns:1fr}
+      .timeline-row{grid-template-columns:1fr;gap:5px}
+      h2{font-size:27px}
+      h3{font-size:20px}
+      .opening-question{font-size:18px}
+      .quote{font-size:21px}
+    }
+  </style>
 </head>
 <body>
-<nav><div class="wrap nav"><div class="brand">KIMCHAEA · AI PROJECT</div><div class="links"><a href="#problem">Problem</a><a href="#method">Method</a><a href="#results">Results</a><a href="#variables">Variables</a><a href="#limits">Limitations</a></div></div></nav>
-<header class="hero"><div class="wrap"><div class="eyebrow">SEMICONDUCTOR EQUIPMENT · TIME-SERIES AI</div><h1>반도체 식각 설비의<br>고장까지 남은 시간을 AI로 예측</h1><p class="lead">PHM 2018 Ion Mill Etch 설비의 실제 센서 시계열을 이용해 고장 전 상태를 분석하고, 과거 고장과 미래 고장을 완전히 분리한 조건에서 GRU 기반 잔여시간 예측을 검증했습니다.</p><div class="chips"><span class="chip">PHM 2018</span><span class="chip">Ion Mill Etch</span><span class="chip">16 Sensors</span><span class="chip">GRU</span><span class="chip">Fault-event Split</span><span class="chip">RUL / TTF</span></div><div class="hero-grid"><div class="metric"><div class="metric-label">EVENT-BALANCED RMSE · BASELINE 대비</div><div class="metric-big"><span>62.5%</span> ↓</div><div class="metric-sub">543.82 s → 203.85 s · 평가 가능한 미래 고장 2건 모두 baseline 대비 개선</div></div><div class="hero-note"><strong>좋은 숫자보다 먼저 평가 방법을 검증했습니다.</strong><p>동일한 고장 사례의 유사 시계열이 학습과 시험에 함께 들어가면 성능이 과대평가될 수 있습니다. 이를 피하기 위해 고장 사례 전체를 시간순으로 분리하고, Train–Test 간 고장 및 원본 데이터 중복이 0인지 확인했습니다.</p></div></div></div></header>
-<section id="problem"><div class="wrap"><div class="kicker">01 · PROBLEM</div><h2>설비가 고장 나기 전에,<br>얼마나 시간이 남았는지 알 수 있을까?</h2><p class="intro">반도체 제조 설비의 예기치 않은 고장은 생산 중단과 품질 저하로 이어질 수 있습니다. 이 프로젝트에서는 냉각 계통 압력이 과도하게 높아지는 <b>Flowcool Pressure Too High</b> 고장을 대상으로, 센서 변화만으로 고장까지 남은 시간을 예측할 수 있는지 확인했습니다.</p><div class="grid3"><div class="card"><h3>데이터</h3><p>PHM Society 2018 Data Challenge의 Ion Mill Etch 반도체 제조 설비 데이터</p></div><div class="card"><h3>입력</h3><p>압력, 전압, 전류, 가스, 회전, 사용량 등 16개 설비 상태 변수의 시계열</p></div><div class="card"><h3>예측 목표</h3><p>고장 약 33분 전 이내 구간에서 현재 시점부터 실제 고장까지 남은 시간</p></div></div></div></section>
-<section id="method"><div class="wrap"><div class="kicker">02 · METHOD</div><h2>같은 고장을 외운 모델이 아니라,<br>미래 고장을 처음 보는 모델로 평가</h2><p class="intro">초기 분석에서는 무작위로 겹치는 시계열 창을 나누면 같은 고장의 매우 유사한 데이터가 학습과 시험에 함께 포함될 수 있음을 확인했습니다. 최종 평가는 고장 사례 자체를 분리하는 방식으로 다시 설계했습니다.</p><div class="pipeline"><div class="step"><span class="step-num">STEP 01</span><span class="step-name">원본 4초 간격 센서 데이터</span></div><div class="step"><span class="step-num">STEP 02</span><span class="step-name">실제 설비 가동 상태만 선별</span></div><div class="step"><span class="step-num">STEP 03</span><span class="step-name">고장 전 2,000초 구간 고정</span></div><div class="step"><span class="step-num">STEP 04</span><span class="step-name">최근 60개 측정값 ≈ 약 4분</span></div><div class="step"><span class="step-num">STEP 05</span><span class="step-name">2-layer GRU로 시간 패턴 학습</span></div><div class="step"><span class="step-num">STEP 06</span><span class="step-name">완전히 이후의 고장 사례로 시험</span></div></div><div class="callout"><strong>Strict evaluation design</strong>과거 고장 7건은 학습, 이후 고장 1건은 검증, 더 이후 고장 3건은 시험으로 고정했습니다. Train–Validation–Test 사이의 고장 사례와 원본 센서 row가 서로 겹치지 않음을 코드로 확인했습니다.</div></div></section>
-<section id="results"><div class="wrap"><div class="kicker">03 · RESULTS</div><h2>평가 가능한 미래 고장 2건 모두에서<br>단순 기준모델보다 낮은 오차</h2><p class="intro">센서를 전혀 보지 않고 학습 데이터의 중앙 잔여시간만 항상 출력하는 단순 기준모델과 비교했습니다. 서로 다른 고장 사례에 동일한 비중을 주는 event-balanced 지표를 중심으로 평가했습니다.</p><div class="results"><div class="number"><div class="label">Event-balanced RMSE</div><div class="big">203.85 s</div><div class="delta">Baseline 543.82 s 대비 62.52% 감소</div><hr style="border:0;border-top:1px solid var(--line);margin:24px 0"><div class="label">Event-balanced SMAPE</div><div class="big" style="font-size:38px">36.44%</div><div class="delta">Baseline 64.44% 대비 43.45% 감소</div></div><div class="bars"><div class="bar-row"><div class="bar-title"><span>Baseline RMSE</span><span>543.82 s · 약 9.1분</span></div><div class="track"><div class="fill" style="width:100%"></div></div></div><div class="bar-row"><div class="bar-title"><span>GRU RMSE</span><span>203.85 s · 약 3.4분</span></div><div class="track"><div class="fill ai" style="width:37.48%"></div></div></div><p style="font-size:12px;color:var(--muted);margin:22px 0 0">※ 분 단위 값은 event-balanced RMSE를 이해하기 쉽게 환산한 값이며 평균 절대오차를 의미하지 않습니다.</p></div></div><div style="margin-top:22px;overflow-x:auto"><table><thead><tr><th>미래 고장 사례</th><th>평가 RUL 범위</th><th>Baseline RMSE</th><th>GRU RMSE</th><th>결과</th></tr></thead><tbody><tr><td>Test Event 1</td><td>802–1,762 s</td><td>643.06 s</td><td><b>127.79 s</b></td><td class="good">개선</td></tr><tr><td>Test Event 2</td><td>0–748 s</td><td>444.57 s</td><td><b>279.90 s</b></td><td class="good">개선</td></tr></tbody></table></div><div class="warning"><strong>왜 “정확도 62.5% 향상”이라고 표현하지 않았을까?</strong>62.5%는 분류 정확도가 아니라 <b>baseline 대비 event-balanced RMSE 감소율</b>입니다. 또한 시험 대상으로 계획한 3개 미래 고장 중 1개는 필요한 연속 센서 이력이 부족해 평가할 수 없었습니다.</div></div></section>
-<section id="variables"><div class="wrap"><div class="kicker">04 · SENSOR ANALYSIS</div><h2>고장 전에 크게 변하는 센서와<br>AI가 실제로 활용한 센서는 같지 않았다</h2><p class="intro">최종 모델을 다시 학습하지 않은 채, 입력 센서를 하나씩 학습 데이터의 평균 상태로 가린 뒤 예측오차 변화를 확인했습니다. 센서를 가렸을 때 오차가 증가할수록, 고정된 GRU가 그 입력 정보에 더 의존했다고 해석했습니다.</p><div style="overflow-x:auto"><table><thead><tr><th>상태 변수</th><th>입력을 가렸을 때 Macro RMSE 변화</th><th>두 미래 고장에서 RMSE 악화</th><th>해석</th></tr></thead><tbody><tr><td><b>ETCHSUPPRESSORCURRENT</b></td><td><b>+476.85 s</b></td><td>2 / 2</td><td>가장 높은 모델 의존도</td></tr><tr><td><b>ETCHSOURCEUSAGE</b></td><td><b>+183.02 s</b></td><td>2 / 2</td><td>설비 사용상태 정보와 연관 가능</td></tr><tr><td><b>IONGAUGEPRESSURE</b></td><td><b>+142.90 s</b></td><td>2 / 2</td><td>압력 상태 정보와 연관</td></tr><tr><td>FLOWCOOLFLOWRATE</td><td>+25.46 s</td><td>2 / 2</td><td>다변량 예측에서 보조 정보로 활용</td></tr><tr><td>FLOWCOOLPRESSURE</td><td>-10.86 s</td><td>0 / 2</td><td>고장 전 증가 경향은 있었지만 독립 예측기여는 제한적</td></tr></tbody></table></div><div class="insight">“고장 전에 값이 변한다”는 것과 “AI 예측에 꼭 필요한 정보다”는 것은 다른 질문이다.</div><p class="intro" style="margin-bottom:0">예를 들어 FLOWCOOLPRESSURE는 학습에 사용한 7개 고장 사례 모두에서 고장 접근 시 증가 방향을 보였지만, 이를 가렸을 때 GRU의 RMSE는 증가하지 않았습니다. 따라서 단변량 변화만으로 핵심 예측변수라고 단정하지 않았습니다.</p></div></section>
-<section id="limits"><div class="wrap"><div class="kicker">05 · VALIDATION & LIMITATIONS</div><h2>결과의 범위를 함께 명시했습니다.</h2><p class="intro">이 결과는 실제 생산라인 전체 성능을 입증한 것이 아니라, 소수의 완전히 분리된 미래 고장 사례를 대상으로 한 엄격한 일반화 스트레스 테스트입니다.</p><div class="limits"><div class="limit"><b>01</b><span>시험 대상으로 계획한 미래 고장 3건 중 <b>2건만 평가 가능</b>했습니다. 1건은 60개 연속 측정값을 확보할 수 없어 모델 입력 자체를 만들 수 없었습니다.</span></div><div class="limit"><b>02</b><span>따라서 Test event coverage는 <b>66.7%</b>이며, 결과를 다수 설비·대규모 생산 환경 전체로 확대해석하지 않았습니다.</span></div><div class="limit"><b>03</b><span>모델의 예측 범위는 전체 설비 수명이 아니라 <b>고장 2,000초(약 33분) 전 이내</b>로 제한됩니다.</span></div><div class="limit"><b>04</b><span>센서 occlusion 결과는 <b>모델이 활용한 정보의 정도</b>를 보여줄 뿐, 해당 센서가 고장의 물리적 원인이라는 인과관계를 증명하지 않습니다.</span></div><div class="limit"><b>05</b><span>Sliding window는 같은 고장 내부에서 서로 겹치므로 window 개수보다 <b>고장 event 단위 결과와 macro 지표</b>를 우선 해석했습니다.</span></div></div><div class="callout" style="margin-top:28px;background:#fff"><strong>Project takeaway</strong>모델 성능을 높이는 것만큼, 학습과 시험 데이터가 실제 미래 상황을 제대로 모사하는지 확인하는 것이 중요했습니다. 평가 데이터의 중복 가능성을 확인한 뒤 고장 event 단위 시간순 분리로 재설계했고, 그 엄격한 조건에서도 평가 가능한 두 미래 고장 사례 모두에서 단순 기준모델 대비 오차 감소를 확인했습니다.</div></div></section>
-<footer><div class="wrap foot"><div class="source"><b>Data</b> · PHM Society 2018 Data Challenge — Ion Mill Etch wafer manufacturing equipment.<br>본 페이지의 수치와 결론은 프로젝트에서 실제 수행한 코드 및 저장된 결과에 한정해 작성했습니다.</div><div>© 2026 Kim Chaea</div></div></footer>
+  <header class="site-header">
+    <div class="hero">
+      <p class="eyebrow">Personal project log · PHM 2018</p>
+      <h1>PHM 2018 Ion Mill Etch 데이터로<br>설비 고장 예측을 시도한 기록</h1>
+      <p class="hero-lead">
+        센서 데이터로 고장을 미리 예측해보는 것에서 시작해,
+        결과가 왜 흔들리는지 확인하고, 선행연구를 재현해보고,
+        마지막에는 고장 사례 자체를 분리하는 평가 방식으로 다시 설계한 과정.
+      </p>
+      <div class="meta">
+        <span>Ion Mill Etch</span>
+        <span>XGBoost · Random Forest · GRU</span>
+        <span>4-second raw sampling</span>
+        <span>TTF / RUL</span>
+        <span>개인 실험 기록</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="shell">
+    <nav class="toc" aria-label="페이지 목차">
+      <div class="toc-title">CONTENTS</div>
+      <a href="#start">00. 시작</a>
+      <a href="#f3">01. F3 조기예측</a>
+      <a class="sub" href="#f3-shift">분포 변화 확인</a>
+      <a href="#track-b">02. F2 · Track B</a>
+      <a class="sub" href="#overlap">99.67% overlap</a>
+      <a href="#track-a">03. F2 · Track A</a>
+      <a class="sub" href="#strict-result">Strict Test</a>
+      <a href="#features">04. 변수 다시 보기</a>
+      <a href="#end">마무리</a>
+    </nav>
+
+    <main>
+      <section id="start">
+        <p class="section-kicker">00 · START</p>
+        <h2>처음에는 고장을 조금이라도 미리 맞혀보고 싶었다.</h2>
+        <p class="lead">
+          PHM Society 2018 Data Challenge의 Ion Mill Etch 설비 데이터를 사용했다.
+          데이터에는 공정 중 측정된 여러 상태변수와 고장까지 남은 시간(TTF)이 포함되어 있다.
+          센서의 물리 단위는 공개 데이터에서 익명화되어 있어, 값의 크기 자체를 물리량으로 해석하지 않았다.
+        </p>
+
+        <div class="opening-question">
+          “현재까지의 센서 데이터를 보고, 가까운 미래에 설비 고장이 발생할지 미리 알 수 있을까?”
+        </div>
+
+        <p>
+          처음부터 하나의 방법을 정해둔 것은 아니었다. XGBoost로 조기예측을 시도했고,
+          결과가 생각보다 약하자 시간에 따른 데이터 분포를 확인했다. 이후 선행연구의 RUL 예측
+          방법을 따라가 봤고, 그 과정에서는 반대로 너무 좋아 보이는 결과가 나왔다.
+        </p>
+        <p>
+          마지막에는 모델보다 평가 방법을 먼저 고정했다. 같은 고장 사례가 학습과 시험에
+          동시에 들어가지 않도록 나눈 뒤, 완전히 다른 미래 고장에서도 RUL을 예측할 수 있는지 다시 확인했다.
+        </p>
+
+        <div class="timeline" aria-label="프로젝트 흐름">
+          <div class="timeline-row">
+            <strong>첫 번째 방향</strong>
+            <span>F3를 30분 전에 분류 → Test 성능이 약함 → 정상 운전 데이터의 distribution shift 확인</span>
+          </div>
+          <div class="timeline-row">
+            <strong>두 번째 방향</strong>
+            <span>선행연구의 F2 RUL pipeline 재현 → 매우 좋은 숫자 → Train/Test raw-row overlap 99.67% 발견</span>
+          </div>
+          <div class="timeline-row">
+            <strong>세 번째 방향</strong>
+            <span>usable fault trajectory가 많은 Tool을 사전 선정 → fault event 자체를 분리한 strict evaluation</span>
+          </div>
+        </div>
+      </section>
+
+      <section id="f3">
+        <p class="section-kicker">01 · FIRST DIRECTION</p>
+        <h2>F3 고장을 30분 전에 예측해보기</h2>
+        <p>
+          처음 대상으로 잡은 고장은 <strong>FlowCool Pressure Dropped Below Limit</strong>였다.
+          현재 센서 상태를 보고 일정 시간 안에 해당 고장이 발생할지를 분류하는 문제로 시작했다.
+        </p>
+
+        <h3>센서값만 보던 모델에서 temporal feature까지</h3>
+        <p>
+          처음에는 현재 센서값만 XGBoost에 넣었다. 이후 rolling, lag, derivative 같은
+          시간 이력 feature를 추가했다. 기본 모델의 Validation PR-AUC는 0.01319였고,
+          temporal feature를 추가한 뒤 0.01663까지 올라갔다.
+        </p>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Class weight</th><th>Validation PR-AUC</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>No weight</td><td class="num best">0.01663</td></tr>
+              <tr><td>Sqrt weight</td><td class="num">0.01402</td></tr>
+              <tr><td>Full weight</td><td class="num">0.01214</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>
+          불균형 데이터라고 해서 positive class에 큰 weight를 주는 것이 항상 도움이 되지는 않았다.
+          이후 실험에서는 Validation에서 가장 나았던 no-weight 설정을 유지했다.
+        </p>
+
+        <h3>10분, 15분, 30분 중 어디를 볼 것인가</h3>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Prediction horizon</th><th>Validation PR-AUC</th><th>Random baseline 대비</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>10 min</td><td class="num">0.00385</td><td class="num">2.39×</td></tr>
+              <tr><td>15 min</td><td class="num">0.00511</td><td class="num">1.91×</td></tr>
+              <tr><td>30 min</td><td class="num best">0.01798</td><td class="num">2.08×</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>
+          10분 예측은 random baseline에 대한 상대적인 lift가 컸지만 양성 표본 자체가 적고
+          절대 PR-AUC도 낮았다. 세 후보 가운데 Validation PR-AUC가 가장 높았던
+          <strong>30분을 이후 분석 범위로 고정</strong>했다. Test 결과를 본 뒤 horizon을 다시 바꾸지는 않았다.
+        </p>
+
+        <h3>공정 context를 같이 넣어보기</h3>
+        <p>
+          센서와 temporal feature만으로 충분한지 보기 위해 <code>stage</code>,
+          <code>recipe</code>, <code>recipe_step</code>을 categorical feature로 추가했다.
+          Test는 아직 사용하지 않은 상태에서 세 조합을 비교했다.
+        </p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>입력</th><th>Validation PR-AUC</th><th>Random baseline 대비</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Context only</td><td class="num">0.00942</td><td class="num">1.09×</td></tr>
+              <tr><td>Sensor + Temporal</td><td class="num">0.01798</td><td class="num">2.08×</td></tr>
+              <tr><td>Sensor + Temporal + Context</td><td class="num best">0.02185</td><td class="num best">2.52×</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>처음으로 Test를 열어본 결과</h3>
+        <p>
+          Threshold도 Test에서 맞추지 않고 Validation에서 F1이 가장 높도록 먼저 정했다.
+          고정된 모델과 threshold를 Test에 한 번 적용했다.
+        </p>
+
+        <div class="metric-row">
+          <div class="metric">
+            <div class="label">Test PR-AUC</div>
+            <div class="value">0.02524</div>
+            <div class="desc">Random PR-AUC 0.01612 대비 1.57×</div>
+          </div>
+          <div class="metric">
+            <div class="label">ROC-AUC</div>
+            <div class="value">0.6268</div>
+            <div class="desc">완전한 random보다는 분리 신호가 있었음</div>
+          </div>
+          <div class="metric">
+            <div class="label">Threshold 적용 후</div>
+            <div class="value">P 1.85% · R 4.82%</div>
+            <div class="desc">실제 경보 모델로 보기에는 매우 낮은 precision / recall</div>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Metric</th><th>Result</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Test positives</td><td class="num">539</td></tr>
+              <tr><td>PR-AUC</td><td class="num best">0.025242</td></tr>
+              <tr><td>Random PR baseline</td><td class="num">0.016123</td></tr>
+              <tr><td>ROC-AUC</td><td class="num">0.6268</td></tr>
+              <tr><td>Precision</td><td class="num">0.0185</td></tr>
+              <tr><td>Recall</td><td class="num">0.0482</td></tr>
+              <tr><td>F1</td><td class="num">0.0267</td></tr>
+              <tr><td>TP / FP / FN / TN</td><td class="num">26 / 1,379 / 513 / 31,513</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>
+          무작위 예측보다 약한 신호는 있었지만, 539개의 positive 중 26개만 잡았고
+          false positive도 1,379개였다.
+        </p>
+        <div class="plain-note">
+          이 시점의 결론은 “예측이 됐다”보다
+          <strong>“신호는 있지만 이 상태로는 경보 모델이라고 보기 어렵다”</strong>에 가까웠다.
+        </div>
+
+        <details>
+          <summary>중간에 event 단위로도 다시 만들어본 이유</summary>
+          <div class="detail-body">
+            같은 문제를 작은 event-based dataset으로 다시 구성해 Context only / Sensor+Temporal /
+            Combined를 비교했다. Validation에서는 Sensor+Temporal이 PR-AUC 0.4251
+            (random baseline 0.25), ROC-AUC 0.6955로 가장 높았다.
+            다만 event 수가 작았고 이 결과도 최종 일반화 주장으로 사용하지 않았다.
+          </div>
+        </details>
+
+        <h3 id="f3-shift">데이터 자체가 시간에 따라 달라지는 건 아닐까</h3>
+        <p>
+          모델을 더 튜닝하기 전에, 과거 정상 운전 구간과 미래 정상 운전 구간을 구분하는
+          별도의 domain classifier를 만들었다. 고장을 맞히는 모델이 아니라
+          <strong>정상 데이터가 어느 시기에 측정된 것인지</strong>를 맞히는 모델이다.
+        </p>
+
+        <div class="figure-grid">
+          <figure class="figure">
+            <img src="images/step30_shap_importance.png"
+                 alt="Distribution shift를 설명하는 상태변수의 SHAP 중요도 막대그래프" />
+            <figcaption>
+              STEP 30 · 과거 정상 구간과 미래 정상 구간을 구분하는 데 기여한 변수.
+              FLOWCOOLPRESSURE, IONGAUGEPRESSURE, FLOWCOOLFLOWRATE 순으로 큰 영향이 나타났다.
+            </figcaption>
+          </figure>
+          <figure class="figure">
+            <img src="images/step30_shap_beeswarm.png"
+                 alt="Distribution shift SHAP beeswarm plot" />
+            <figcaption>
+              STEP 30 · 변수 값의 높고 낮음이 domain classifier 출력에 어느 방향으로 작용했는지 본 SHAP beeswarm.
+            </figcaption>
+          </figure>
+        </div>
+
+        <p>
+          정상 상태 자체의 센서 분포가 시기별로 달랐다. Flow와 pressure 관계를 Train 정상 데이터로
+          학습했을 때도 Validation 정상 구간에 학습 시기에서 보기 어려웠던 운전영역이 섞여 있었다.
+          즉 F3의 약한 Test 성능을 단순히 XGBoost 파라미터 문제로만 보기 어려웠다.
+        </p>
+
+        <div class="turn">
+          <span class="turn-label">WHY THE DIRECTION CHANGED</span>
+          <p>
+            F3를 계속 튜닝하기보다 문제 정의를 다시 보기로 했다.
+            다음 단계에서는 선행연구에서 RUL을 직접 예측한 다른 failure mode인 F2를 대상으로,
+            논문의 pipeline을 가능한 범위에서 따라가 보기로 했다.
+          </p>
+        </div>
+      </section>
+
+      <section id="track-b">
+        <p class="section-kicker">02 · SECOND DIRECTION</p>
+        <h2>F2 RUL 예측을 선행연구 방식으로 따라가보기</h2>
+        <p>
+          다음 대상은 <strong>Flowcool Pressure Too High Check Flowcool Pump</strong>, 이하 F2였다.
+          20개 Tool의 fault event를 먼저 확인했고, 선행논문의 예시 장비인
+          <code>01_M02</code>에는 F2 fault event가 40개 있었다.
+        </p>
+        <p>
+          하지만 <code>FIXTURESHUTTERPOSITION = 1</code>인 운전상태로 제한하고 TTF와 연결하자
+          실제로 연결되는 future event는 9개, Normal과 Fault 구간을 모두 갖는 trajectory는 3개뿐이었다.
+          fault 파일의 고장 수와 실제 run-to-failure 분석에 쓸 수 있는 trajectory 수는 달랐다.
+        </p>
+
+        <h3>Flow와 Pressure 관계에서 residual 만들기</h3>
+        <p>
+          선행연구의 방식대로 정상 상태에서 <code>FLOWCOOLFLOWRATE</code>로
+          expected <code>FLOWCOOLPRESSURE</code>를 예측한 뒤
+          <code>residual = predicted pressure − actual pressure</code>를 만들었다.
+        </p>
+
+        <figure class="figure">
+          <img src="images/cell69b_flow_pressure.png"
+               alt="01_M02 정상 데이터의 FlowCool flow와 pressure 관계 및 MLP expected pressure" />
+          <figcaption>
+            Cell 69B · 정상 데이터의 FlowCool flow → pressure 관계를 MLP로 근사한 실제 출력.
+            일부 극단값도 보정하지 않고 원래 결과 그대로 남겼다.
+          </figcaption>
+        </figure>
+
+        <p>
+          Train / Validation / Test의 R²는 약 0.49~0.50으로 비슷했다.
+          absolute residual을 단독 feature로 Normal/Fault에 대해 본 진단 ROC-AUC는 0.9075였지만,
+          이 값은 최종 분류 성능으로 사용하지 않았다.
+        </p>
+
+        <h3>RF health assessment와 degradation warning</h3>
+        <p>
+          Normal/Fault 분류에는 100-tree Random Forest를 사용했다.
+          논문의 F2 ×1000 oversampling은 계산량 때문에 class weight로 근사했다.
+          Train/OOB에서는 Original과 +Residual 모델 모두 거의 완벽한 결과가 나왔고,
+          residual은 17개 feature 중 RF importance 5위였다.
+        </p>
+        <p>
+          이후 failure probability를 150 sample의 causal trailing average로 smoothing하고,
+          <code>P(failure) &gt; 0.5</code>를 warning으로 정의했다.
+          Fault-state를 포함한 5개 event 모두 warning이 발생했지만,
+          우리가 정한 <code>TTF &lt; 2000 s</code> 영역에 들어가기 전에 경고된 event는 2개였다.
+        </p>
+
+        <h3>warning 이후 60개 sample로 RUL 예측</h3>
+        <p>
+          Warning 이후 60개 sample을 하나의 sequence로 만들고,
+          선행연구와 같은 2-layer GRU, 64 nodes/layer 구조로 RUL을 예측했다.
+          Original 16개 feature와 residual을 추가한 17개 feature를 비교했다.
+        </p>
+
+        <figure class="figure">
+          <img src="images/cell73b_paper_gru_rul.png"
+               alt="Paper-style sliding-window Test에서 실제 RUL과 Original GRU 및 residual GRU 예측 비교" />
+          <figcaption>
+            Cell 73B · Paper-style sliding-window Test의 실제 RUL과 두 GRU 예측.
+            시각적으로는 RUL 감소 추세를 상당히 잘 따라가는 것처럼 보였다.
+          </figcaption>
+        </figure>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Paper-style Test</th><th>RMSE</th><th>MAE</th><th>SMAPE</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Original 16 features</td><td class="num best">31.01 s</td><td class="num best">24.40 s</td><td class="num best">6.23%</td></tr>
+              <tr><td>+ Residual</td><td class="num">62.73 s</td><td class="num">48.93 s</td><td class="num">9.86%</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>
+          Original GRU의 숫자는 매우 좋았지만, 선행연구에서 기대했던 residual 추가 성능 개선은 재현되지 않았다.
+          이보다 더 중요한 문제는 window split 자체에서 발견됐다.
+        </p>
+
+        <h3 id="overlap">너무 잘 나오는 결과를 다시 확인하기</h3>
+        <p>
+          60-sample sliding window를 stride 1로 만들면 첫 window가 1~60,
+          다음 window가 2~61처럼 거의 같은 원본 row를 공유한다.
+          window 단위 random split을 한 뒤 원본 row 기준으로 다시 계산했다.
+        </p>
+
+        <div class="metric-row">
+          <div class="metric">
+            <div class="label">Paper-style windows</div>
+            <div class="value">1,349</div>
+            <div class="desc">Train 944 · Validation 202 · Test 203</div>
+          </div>
+          <div class="metric">
+            <div class="label">Test raw rows also in Train</div>
+            <div class="value">99.67%</div>
+            <div class="desc">window는 다르지만 원본 데이터가 거의 겹침</div>
+          </div>
+          <div class="metric">
+            <div class="label">평가 단위</div>
+            <div class="value">Window</div>
+            <div class="desc">unseen fault event validation은 아님</div>
+          </div>
+        </div>
+
+        <p>
+          Test window가 203개 있어도 203개의 독립적인 고장을 평가한 것이 아니었다.
+          같은 fault trajectory의 인접 조각들이 Train과 Test에 함께 들어가 있었다.
+        </p>
+
+        <div class="turn">
+          <span class="turn-label">WHY THE DIRECTION CHANGED AGAIN</span>
+          <p>
+            31초라는 RMSE는 좋아 보였지만, 이 평가 구조에서는
+            “새로운 고장을 예측하는 성능”이라고 부르기 어려웠다.
+            다음 실험에서는 모델보다 먼저
+            <strong>같은 fault event의 데이터가 Train과 Test에 절대로 같이 들어가지 않는 조건</strong>을 고정했다.
+          </p>
+        </div>
+      </section>
+
+      <section id="track-a">
+        <p class="section-kicker">03 · THIRD DIRECTION</p>
+        <h2>고장 사례 자체를 완전히 분리해서 다시 평가하기</h2>
+
+        <h3>성능을 보기 전에 Tool부터 고정</h3>
+        <p>
+          F2 event가 비교적 많은 6개 Tool에 같은 FSP=1 availability audit을 적용했다.
+          단순 fault 수가 아니라 Normal과 Fault 구간을 모두 갖는 usable trajectory 수로 순위를 정했다.
+        </p>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Tool</th><th>Mapped events</th><th>Fault-state events</th><th>Normal+Fault events</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="best">08_M01</td><td class="num">31</td><td class="num">18</td><td class="num best">11</td></tr>
+              <tr><td>09_M02</td><td class="num">37</td><td class="num">8</td><td class="num">7</td></tr>
+              <tr><td>03_M01</td><td class="num">34</td><td class="num">6</td><td class="num">4</td></tr>
+              <tr><td>03_M02</td><td class="num">48</td><td class="num">4</td><td class="num">4</td></tr>
+              <tr><td>01_M02</td><td class="num">9</td><td class="num">5</td><td class="num">3</td></tr>
+              <tr><td>02_M02</td><td class="num">27</td><td class="num">2</td><td class="num">2</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>
+          08_M01이 usable Normal+Fault event 11개로 가장 많았다.
+          이 기준은 모델 성능을 보기 전에 적용했고, 이후 결과가 어떻든 Tool을 다시 바꾸지 않았다.
+        </p>
+
+        <h3>fault event를 시간순으로 분리</h3>
+        <p>
+          11개의 usable trajectory를 발생 순서대로
+          <strong>Train 7 / Validation 1 / Test 3</strong>으로 고정했다.
+          RUL 범위도 앞선 정의와 같은 <code>TTF &lt; 2000 s</code>로 유지했다.
+          60개 연속 sample의 실제 timestamp span은 약 236초였다.
+        </p>
+
+        <div class="metric-row">
+          <div class="metric">
+            <div class="label">Train / Val / Test events</div>
+            <div class="value">7 / 1 / 3</div>
+            <div class="desc">chronological complete-fault-event split</div>
+          </div>
+          <div class="metric">
+            <div class="label">Event overlap</div>
+            <div class="value">0</div>
+            <div class="desc">Train · Validation · Test 사이 완전 분리</div>
+          </div>
+          <div class="metric">
+            <div class="label">Raw-row overlap</div>
+            <div class="value">0</div>
+            <div class="desc">Track B의 99.67% 문제를 제거</div>
+          </div>
+        </div>
+
+        <p>
+          생성된 window는 Train 1,974 / Validation 353 / Test 361이었지만,
+          여기서 독립 표본 수를 window 수로 해석하지 않았다.
+          핵심 평가 단위는 서로 다른 fault trajectory였다.
+        </p>
+
+        <h3 id="strict-result">새로운 미래 고장에서 RUL 예측</h3>
+        <p>
+          모델 구조도 새로 탐색하지 않고 Track B와 같은 2-layer GRU(64 nodes/layer)를 사용했다.
+          16개 numeric state feature를 입력으로 사용했고 parameter count는 40,769개였다.
+          Baseline은 센서를 보지 않고 Train RUL 중앙값인 762초를 항상 출력하는 모델이다.
+        </p>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Event-balanced strict Test</th><th>Train-median baseline</th><th>GRU</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>RMSE</td><td class="num">543.82 s</td><td class="num best">203.85 s</td></tr>
+              <tr><td>MAE</td><td class="num">474.05 s</td><td class="num best">171.73 s</td></tr>
+              <tr><td>SMAPE</td><td class="num">64.44%</td><td class="num best">36.44%</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="plain-note">
+          Event-balanced RMSE 기준으로 <strong>543.82 s → 203.85 s</strong>,
+          Train-median baseline 대비 <strong>62.52% 감소</strong>했다.
+          이것을 “정확도가 62.5% 향상됐다”고 표현하지는 않았다.
+        </div>
+
+        <figure class="figure">
+          <img src="images/cell77a_strict_gru_rul.png"
+               alt="완전히 분리된 두 미래 F2 fault event에서 실제 RUL과 GRU 예측을 비교한 그래프" />
+          <figcaption>
+            Cell 77A · Strict unseen-event Test의 실제 출력. 두 독립 미래 fault event를 이어서 표시했다.
+            Sliding window는 event 내부에서 겹치므로 361개 window를 361개의 독립 사례로 해석하지 않는다.
+          </figcaption>
+        </figure>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Unseen Test event</th><th>Windows</th><th>GRU RMSE</th><th>Baseline RMSE</th><th>GRU SMAPE</th><th>Baseline SMAPE</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>19844812</td><td class="num">173</td><td class="num best">127.79 s</td><td class="num">643.06 s</td><td class="num best">7.80%</td><td class="num">50.08%</td></tr>
+              <tr><td>19898846</td><td class="num">188</td><td class="num best">279.90 s</td><td class="num">444.57 s</td><td class="num best">65.08%</td><td class="num">78.80%</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Test는 3개였지만 실제로 평가된 것은 2개</h3>
+        <p>
+          처음 계획한 Test event는 3개였다. 마지막 event 28440806은
+          <code>TTF &lt; 2000 s</code> 구간에 65개 row가 있었지만 두 segment로 나뉘었고,
+          가장 긴 연속 segment가 50개였다. 따라서 필요한 60-sample sequence를 만들 수 없었다.
+        </p>
+
+        <div class="metric-row">
+          <div class="metric">
+            <div class="label">Planned Test events</div>
+            <div class="value">3</div>
+          </div>
+          <div class="metric">
+            <div class="label">Scorable events</div>
+            <div class="value">2</div>
+          </div>
+          <div class="metric">
+            <div class="label">Event coverage</div>
+            <div class="value">66.67%</div>
+          </div>
+        </div>
+
+        <p>
+          이 event는 모델 결과가 나빠서 제외한 것이 아니다. 모델을 돌리기 전 sequence availability
+          단계에서 이미 평가 불가능했다. 따라서 최종 결과는
+          <strong>두 개의 완전히 분리된 미래 fault trajectory에 대한 작은 규모의 strict stress test</strong>로 해석했다.
+        </p>
+      </section>
+
+      <section id="features">
+        <p class="section-kicker">04 · AFTER THE MODEL</p>
+        <h2>마지막으로 모델이 무엇을 보고 있었는지 확인하기</h2>
+        <p>
+          모델을 더 학습하지 않고 그대로 고정한 뒤, Test sequence에서 입력 feature를 하나씩
+          Train 평균값으로 가렸다. 해당 feature를 없앴을 때 event-balanced RMSE가 얼마나 바뀌는지를 봤다.
+          이 결과는 <strong>모델 의존도</strong>이지 물리적 인과관계가 아니다.
+        </p>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Frozen-GRU occlusion</th><th>Δ Macro RMSE</th><th>RMSE가 악화된 Test event</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>ETCHSUPPRESSORCURRENT</td><td class="num best">+476.85 s</td><td class="num">2 / 2</td></tr>
+              <tr><td>ETCHSOURCEUSAGE</td><td class="num">+183.02 s</td><td class="num">2 / 2</td></tr>
+              <tr><td>IONGAUGEPRESSURE</td><td class="num">+142.90 s</td><td class="num">2 / 2</td></tr>
+              <tr><td>ETCHAUX2SOURCETIMER</td><td class="num">+141.24 s</td><td class="num">2 / 2</td></tr>
+              <tr><td>FIXTURETILTANGLE</td><td class="num">+79.81 s</td><td class="num">2 / 2</td></tr>
+              <tr><td>ACTUALSTEPDURATION</td><td class="num">+74.70 s</td><td class="num">2 / 2</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>고장 전에 많이 변하는 센서와 AI가 사용하는 센서는 같을까</h3>
+        <p>
+          모델 학습 전에 Train event만 사용해 near-fault 변화를 따로 확인했을 때
+          <code>FLOWCOOLPRESSURE</code>는 7개 Train event 모두에서 고장에 가까워질수록 증가했다.
+          그러나 frozen GRU에서 이 변수를 가렸을 때 Macro RMSE는 오히려 10.86초 감소했다.
+        </p>
+        <p>
+          반대로 <code>ETCHSUPPRESSORCURRENT</code>는 Train-only degradation 분석에서도 변화가 관찰됐고,
+          occlusion에서는 가장 큰 모델 의존도를 보였다.
+        </p>
+
+        <div class="plain-note">
+          단변량에서 고장 전에 크게 변하는 변수, 여러 변수를 함께 쓰는 모델이 예측에 의존하는 변수,
+          그리고 실제 고장의 물리적 원인은 서로 다른 질문이다.
+        </div>
+      </section>
+
+      <section id="end">
+        <p class="section-kicker">END</p>
+        <h2>모델보다 결과를 보는 기준이 더 많이 바뀌었다.</h2>
+        <p>
+          처음에는 XGBoost로 고장을 조금이라도 더 잘 맞히는 것이 목표였다.
+          센서값에 temporal feature를 추가하고, class weight를 바꾸고, prediction horizon을 비교하고,
+          공정 context도 넣어봤다. Test에서 약한 신호가 있었지만 실제 경보 성능은 충분하지 않았다.
+        </p>
+        <p>
+          그래서 데이터를 다시 봤다. 과거와 미래의 정상 운전 상태 자체가 달랐고,
+          선행연구 방법을 따라가면서는 반대로 너무 좋아 보이는 결과가 나왔다.
+          그 숫자를 다시 확인하다가 Train과 Test가 거의 같은 raw data를 공유한다는 것도 발견했다.
+        </p>
+        <p>
+          마지막에는 모델을 더 복잡하게 만드는 대신 평가 조건부터 고정했다.
+          같은 고장 사례가 학습과 시험에 함께 들어가지 않도록 나누고,
+          모델을 보기 전에 Tool과 horizon, sequence length를 정한 뒤 다시 실험했다.
+        </p>
+        <p>
+          작은 규모이지만 완전히 분리된 두 미래 fault trajectory 모두에서
+          GRU가 단순 baseline보다 낮은 RUL 오차를 보였다.
+          동시에 Test 3건 중 1건은 연속 history 부족으로 평가할 수 없었다는 제한도 그대로 남겼다.
+        </p>
+
+        <div class="quote">
+          좋은 숫자를 얻는 것과,<br>
+          믿을 수 있는 숫자를 얻는 것은 다른 문제였다.
+        </div>
+
+        <div class="footnotes">
+          <p><strong>데이터:</strong> PHM Society 2018 Data Challenge, Ion Mill Etch equipment.</p>
+          <p><strong>참고 방법:</strong> Wu, Jiang, Luo, Yin, “Remaining useful life prediction for ion etching machine cooling system using deep recurrent neural network-based approaches,” Control Engineering Practice, 2021.</p>
+          <p><strong>해석 범위:</strong> 최종 Track A의 RUL은 TTF &lt; 2000 s 구간에 한정되며, strict Test의 독립 미래 fault event는 평가 가능한 2건이다.</p>
+          <p><strong>변수 해석:</strong> SHAP / RF importance / occlusion은 모델 또는 데이터와의 연관성을 보여줄 뿐 고장의 인과 원인을 입증하지 않는다.</p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <footer>
+    <div class="footer-inner">
+      Personal project log · PHM 2018 Ion Mill Etch equipment failure prediction
+    </div>
+  </footer>
 </body>
 </html>
