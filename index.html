@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="공개된 PHM 2018 반도체 식각 설비 센서 데이터를 활용해 고장 조기예측과 고장까지 남은 시간(RUL) 예측을 수행하고, 새로운 고장 사례에서도 성능이 유지되는지 검증한 AI 프로젝트." />
+  <meta name="description" content="PHM Society 2018 Data Challenge의 Ion Mill Etch 설비 센서 데이터를 활용해 고장 발생 여부와 고장까지 남은 시간(RUL)을 예측한 프로젝트." />
   <title>반도체 식각 설비 센서 데이터를 활용한 AI 고장 예측 프로젝트</title>
   <style>
     :root{
@@ -123,7 +123,18 @@
       margin:0;
       color:#5d6872;
       font-size:13px;
+      line-height:1.6;
+    }
+    .overview-card .mini-lines{
+      margin:0;
+      padding:0;
+      list-style:none;
+      color:#5d6872;
+      font-size:13px;
       line-height:1.65;
+    }
+    .overview-card .mini-lines li{
+      margin:2px 0;
     }
     .summary-strip{
       max-width:980px;
@@ -134,6 +145,50 @@
       color:#42505b;
       font-size:14px;
       line-height:1.75;
+    }
+
+    .data-source-line{
+      margin-top:18px;
+      color:#78838d;
+      font-size:12px;
+      line-height:1.6;
+    }
+    .data-source-line strong{
+      color:#5d6872;
+      font-weight:720;
+    }
+    .data-source-line a{
+      color:#5d6872;
+      text-decoration:underline;
+      text-underline-offset:3px;
+    }
+    .inline-citation{
+      margin:10px 0 24px;
+      padding:10px 0;
+      border-top:1px solid var(--line);
+      border-bottom:1px solid var(--line);
+      color:#727d86;
+      font-size:12px;
+      line-height:1.65;
+    }
+    .inline-citation a{
+      text-decoration:underline;
+      text-underline-offset:3px;
+    }
+    .box-label{
+      display:block;
+      margin-bottom:6px;
+      color:var(--accent);
+      font-size:12px;
+      font-weight:800;
+      letter-spacing:.06em;
+    }
+    .compact-list{
+      margin:5px 0 0 18px;
+      padding:0;
+    }
+    .compact-list li{
+      margin:3px 0;
     }
 
     .shell{
@@ -241,8 +296,37 @@
     .term span{
       color:#596671;
       font-size:13px;
-      line-height:1.7;
+      line-height:1.65;
     }
+    .term ul{
+      margin:4px 0 0 17px;
+      padding:0;
+      color:#596671;
+      font-size:13px;
+      line-height:1.65;
+    }
+    .term li{margin:2px 0}
+
+    .dataset-context{
+      margin:30px 0 36px;
+      border-top:1px solid var(--line-strong);
+      border-bottom:1px solid var(--line-strong);
+    }
+    .dataset-row{
+      display:grid;
+      grid-template-columns:150px 1fr;
+      gap:18px;
+      padding:13px 0;
+      border-bottom:1px solid var(--line);
+      font-size:14px;
+      line-height:1.65;
+    }
+    .dataset-row:last-child{border-bottom:0}
+    .dataset-row strong{
+      color:#4f5b65;
+      font-size:13px;
+    }
+    .dataset-row span{color:#596671}
 
     .timeline{
       margin:34px 0 0;
@@ -436,6 +520,7 @@
       .metric-row{grid-template-columns:1fr}
       .glossary-grid{grid-template-columns:1fr}
       .timeline-row{grid-template-columns:1fr;gap:5px}
+      .dataset-row{grid-template-columns:1fr;gap:4px}
       .overview-inner{grid-template-columns:1fr}
       .project-overview{padding:0 20px 30px}
       h2{font-size:27px}
@@ -449,50 +534,62 @@
   <header class="site-header">
     <div class="hero">
       <p class="eyebrow">AI × Semiconductor · PHM 2018</p>
-      <h1>반도체 식각 설비 센서 데이터를 활용한<br>AI 고장 예측 프로젝트</h1>
+      <h1>센서 데이터를 활용한 반도체 식각 설비<br>고장 예측 프로젝트</h1>
+      <div class="data-source-line">
+        <strong>Data Source</strong> · PHM Society, <em>2018 PHM Data Challenge — Ion Mill Etch</em>
+        · 고장 예측용 공식 공개 데이터
+        · <a href="https://phmsociety.org/conference/annual-conference-of-the-phm-society/annual-conference-of-the-prognostics-and-health-management-society-2018-b/phm-data-challenge-6/"
+             target="_blank" rel="noopener noreferrer">공식 페이지 ↗</a>
+      </div>
       <p class="hero-lead">
-        공개된 Ion Mill Etch(반도체 식각) 설비 데이터를 이용해
-        <strong>센서 정보만으로 고장 징후를 미리 찾고, 고장까지 남은 시간을 예측할 수 있는지</strong> 확인했다.
-        단순히 높은 성능 수치를 만드는 것보다, 학습에 사용하지 않은 새로운 고장 사례에서도
-        결과를 믿을 수 있는지 검증하는 데 초점을 맞췄다.
+        반도체 식각 설비에서 수집된 센서 데이터를 이용해
+        <strong>고장 발생 가능성과 고장까지 남은 시간</strong>을 예측했다.
+        예측 성능뿐 아니라 학습·평가 데이터의 중복과 시간에 따른 데이터 변화까지 점검하고,
+        학습에서 보지 않은 고장 사례로 최종 성능을 다시 확인했다.
       </p>
       <div class="meta">
-        <span>반도체 식각 설비</span>
-        <span>설비 센서 데이터 분석</span>
-        <span>고장 조기예측 · 잔여수명(RUL) 예측</span>
+        <span>Ion Mill Etch</span>
+        <span>설비 센서 데이터</span>
+        <span>고장 발생 예측 · RUL 예측</span>
         <span>XGBoost · Random Forest · GRU</span>
       </div>
     </div>
   </header>
 
-  <div class="project-overview" aria-label="프로젝트 한눈에 보기">
+  <div class="project-overview" aria-label="프로젝트 요약">
     <div class="overview-inner">
       <div class="overview-card">
-        <span class="label">무엇을 했나</span>
-        <strong>반도체 설비 고장 예측</strong>
-        <p>식각 설비의 센서 데이터를 AI 모델에 학습시켜 고장 발생 가능성과 고장까지 남은 시간을 예측했다.</p>
+        <span class="label">WHAT</span>
+        <strong>반도체 식각 설비 고장 예측</strong>
+        <ul class="mini-lines">
+          <li>· PHM 2018 공개 데이터 활용</li>
+          <li>· 고장 발생 + RUL 예측</li>
+        </ul>
       </div>
       <div class="overview-card">
-        <span class="label">왜 했나</span>
-        <strong>고장을 사전에 감지할 수 있는지 확인</strong>
-        <p>설비가 실제로 멈추기 전에 센서 변화에서 이상 징후를 찾을 수 있다면 예방정비에 활용할 수 있기 때문이다.</p>
+        <span class="label">WHY</span>
+        <strong>고장 전 이상징후 탐지</strong>
+        <ul class="mini-lines">
+          <li>· 사전 감지 가능성 확인</li>
+          <li>· 예방정비 활용 가능성 검토</li>
+        </ul>
       </div>
       <div class="overview-card">
-        <span class="label">어떻게 했나</span>
-        <strong>분류 → RUL 예측 → 평가 재설계</strong>
-        <p>XGBoost와 GRU 등을 사용했고, 결과가 흔들리거나 지나치게 좋아 보일 때 데이터와 평가 방법을 다시 점검했다.</p>
+        <span class="label">HOW</span>
+        <strong>XGBoost · RF · GRU</strong>
+        <ul class="mini-lines">
+          <li>· 조기예측 → RUL 예측</li>
+          <li>· 데이터 중복·분포 변화 점검</li>
+        </ul>
       </div>
       <div class="overview-card">
-        <span class="label">무엇을 확인했나</span>
-        <strong>모델 성능보다 평가 신뢰성이 중요했다</strong>
-        <p>초기 조기예측은 약했고, 최종 RUL 실험은 새로운 고장 2건에서 단순 기준모델보다 낮은 오차를 보였다.</p>
+        <span class="label">RESULT</span>
+        <strong>새로운 고장 사례로 재평가</strong>
+        <ul class="mini-lines">
+          <li>· 초기 조기예측 성능 제한</li>
+          <li>· 독립 Test 2건에서 기준모델 대비 RUL 오차 감소</li>
+        </ul>
       </div>
-    </div>
-    <div class="summary-strip">
-      <strong>한 줄 요약.</strong>
-      반도체 식각 설비의 센서 데이터로 고장 예측 AI를 만들고,
-      결과를 그대로 믿지 않고 데이터 중복과 시간에 따른 분포 변화까지 확인해
-      <strong>“새로운 고장에도 통하는가?”를 기준으로 평가 방법을 다시 설계한 프로젝트</strong>다.
     </div>
   </div>
 
@@ -513,50 +610,101 @@
     <main>
       <section id="start">
         <p class="section-kicker">00 · PROJECT OVERVIEW</p>
-        <h2>프로젝트 개요: 반도체 식각 설비의 고장 시점을 센서 데이터로 예측</h2>
+        <h2>프로젝트 개요: 센서 데이터를 활용한 반도체 식각 설비의 고장 시점 예측</h2>
         <p class="lead">
-          이 프로젝트에서는 PHM Society 2018 Data Challenge에 공개된
+          이 프로젝트에서는 <strong>PHM Society 2018 Data Challenge에서 공개한</strong>
           <strong>Ion Mill Etch(반도체 식각) 설비 데이터</strong>를 사용했다.
-          설비가 동작하는 동안 기록된 압력, 전류, 전압, 유량 등 여러 센서값을 바탕으로
-          <strong>① 가까운 시간 안에 고장이 발생할지, ② 고장까지 얼마나 시간이 남았는지</strong>를 AI로 예측했다.
+          Ion Mill Etch는 이온빔을 웨이퍼 표면에 조사해 재료를 제거하는 식각 설비이며,
+          공개 데이터에는 여러 장비의 운전조건과 압력·전류·전압·유량 등 시계열 센서값이 포함되어 있다.
         </p>
 
+        <div class="dataset-context" aria-label="공개 데이터 설명">
+          <div class="dataset-row">
+            <strong>대상 설비</strong>
+            <span>Wafer 제조공정에 사용되는 Ion Mill Etch 설비</span>
+          </div>
+          <div class="dataset-row">
+            <strong>Flowcool</strong>
+            <span>Helium과 water system을 이용해 wafer를 냉각하는 계통</span>
+          </div>
+          <div class="dataset-row">
+            <strong>공식 Challenge 목표</strong>
+            <span>시계열 센서 데이터 기반 고장 진단 + 다음 고장까지 남은 시간(TTF/RUL) 예측</span>
+          </div>
+          <div class="dataset-row">
+            <strong>공식 고장 유형</strong>
+            <span>FlowCool pressure drop · Flowcool pressure high · Flowcool leak, 총 3종</span>
+          </div>
+          <div class="dataset-row">
+            <strong>본 프로젝트 범위</strong>
+            <span>3개 유형 중 pressure drop / pressure high 2종 분석</span>
+          </div>
+          <div class="dataset-row">
+            <strong>고장 시점 기준</strong>
+            <span>운영자가 정비를 위해 장비를 정지한 시점. 실제 이상이 시작된 시점은 데이터에 제공되지 않음</span>
+          </div>
+        </div>
+
+        <div class="inline-citation">
+          <strong>Dataset description</strong> · PHM Society,
+          <em>2018 PHM Data Challenge — Ion Mill Etch</em>
+          · <a href="https://phmsociety.org/conference/annual-conference-of-the-phm-society/annual-conference-of-the-prognostics-and-health-management-society-2018-b/phm-data-challenge-6/"
+               target="_blank" rel="noopener noreferrer">공식 설명 ↗</a>
+        </div>
+
         <div class="opening-question">
-          목표는 단순했다. <strong>“설비가 실제로 고장 나기 전에 센서 데이터에서 이상 징후를 찾아낼 수 있는가?”</strong>를 확인하는 것이었다.
+          <span class="box-label">목표</span>
+          <strong>설비가 실제로 고장 나기 전에 센서 데이터에서 이상징후를 찾아낼 수 있는가?</strong>
         </div>
         <p>
-          이를 위해 처음에는 특정 냉각계통 고장을 30분 전에 맞히는 분류 모델을 만들었다.
-          이후에는 문제를 바꿔, 설비가 고장 나기까지 남은 시간(RUL)을 직접 예측했다.
-          마지막에는 같은 고장 데이터가 학습과 평가에 섞이지 않도록 평가 방법을 다시 설계해,
-          <strong>처음 보는 미래 고장에서도 예측이 가능한지</strong> 확인했다.
+          공식 Challenge는 고장 진단과 TTF/RUL 예측을 목표로 한다.
+          본 프로젝트에서는 먼저 pressure drop 고장에 대해
+          <strong>일정 시간 안에 고장이 발생하는지 분류</strong>하는 방식으로 조기예측 가능성을 확인했다.
+          10분·15분·30분 예측 범위를 Validation에서 비교한 뒤 30분을 후속 분석 범위로 고정했다.
+          이후 pressure high 고장에서는 공식 Challenge의 RUL 문제와 같은 방향으로
+          <strong>고장까지 남은 시간</strong>을 직접 예측했다.
         </p>
 
         <div class="glossary">
-          <p class="glossary-title">아래부터 나오는 전문용어는 이렇게 보면 된다</p>
+          <p class="glossary-title">등장 용어</p>
           <div class="glossary-grid">
             <div class="term">
-              <strong>F2 / F3</strong>
-              <span>PHM 2018 데이터에서 구분되는 서로 다른 냉각계통 고장 유형. 여기서는 F2를 압력 과다 고장, F3를 압력 저하 고장으로 부른다.</span>
+              <strong>분석 고장 유형</strong>
+              <span>PHM Challenge에 명시된 Flowcool 관련 고장 중 2종 사용</span>
+              <ul>
+                <li>Pressure Dropped Below Limit: 압력 저하</li>
+                <li>Pressure Too High: 압력 과다</li>
+                <li>Flowcool leak: 공식 고장 유형이나 본 프로젝트에서는 미분석</li>
+              </ul>
             </div>
             <div class="term">
               <strong>TTF / RUL</strong>
-              <span>현재 시점에서 고장까지 남은 시간. 원본 데이터에서는 TTF(Time to Failure), 예측 문제에서는 RUL(Remaining Useful Life)이라는 표현을 주로 쓴다.</span>
+              <ul>
+                <li>TTF: 원본 데이터에 제공된 고장까지 남은 시간</li>
+                <li>RUL: 모델이 예측하는 잔여수명</li>
+              </ul>
             </div>
             <div class="term">
               <strong>Temporal feature</strong>
-              <span>현재 센서값만 보는 대신 이전 값, 변화량, 이동평균처럼 시간에 따른 변화를 입력으로 만든 변수.</span>
+              <span>현재값 외 이전값·변화량·이동평균 등 시간 변화 정보</span>
             </div>
             <div class="term">
               <strong>PR-AUC</strong>
-              <span>고장처럼 양성 사례가 매우 적은 불균형 데이터에서 precision-recall 성능을 요약하는 지표. 높을수록 고장 사례를 구분하는 능력이 좋다.</span>
+              <ul>
+                <li>고장 사례가 적은 불균형 데이터의 분류 성능 지표</li>
+                <li>값이 높을수록 고장 구분 능력 우수</li>
+              </ul>
             </div>
             <div class="term">
               <strong>Distribution shift</strong>
-              <span>학습할 때 본 데이터와 이후 평가 데이터의 분포가 달라지는 현상. 같은 ‘정상’ 상태라도 시기나 운전조건에 따라 센서 분포가 달라질 수 있다.</span>
+              <span>학습 시점과 평가 시점의 센서 데이터 분포 차이</span>
             </div>
             <div class="term">
               <strong>Strict unseen-event evaluation</strong>
-              <span>같은 고장 사례에서 잘라낸 데이터가 Train과 Test에 동시에 들어가지 않도록, 고장 한 건 전체를 하나의 단위로 분리해 평가하는 방식.</span>
+              <ul>
+                <li>고장 사례 단위로 Train/Test 완전 분리</li>
+                <li>같은 고장 데이터의 중복 방지</li>
+              </ul>
             </div>
           </div>
         </div>
@@ -576,31 +724,32 @@
         <div class="timeline" aria-label="프로젝트 흐름">
           <div class="timeline-row">
             <strong>1단계 · 조기예측</strong>
-            <span>“30분 안에 고장이 날까?”를 예측 → 실제 시험 데이터에서는 성능이 낮아 원인을 다시 분석</span>
+            <span>고장 발생 여부 예측 → 10·15·30분 비교 → Test 성능 제한 → 원인 점검</span>
           </div>
           <div class="timeline-row">
             <strong>2단계 · 잔여시간 예측</strong>
-            <span>“고장까지 몇 초가 남았을까?”를 예측 → 결과가 지나치게 좋아 데이터 중복 여부를 재점검</span>
+            <span>고장까지 남은 시간 예측 → 높은 성능 확인 → Train/Test 데이터 중복 점검</span>
           </div>
           <div class="timeline-row">
             <strong>3단계 · 재검증</strong>
-            <span>학습에서 한 번도 보지 않은 고장 사례만 Test로 분리 → 새로운 고장에서도 예측 가능한지 확인</span>
+            <span>고장 사례 단위 분리 → 학습에서 보지 않은 미래 고장만 Test → 성능 재확인</span>
           </div>
         </div>
       </section>
 
       <section id="f3">
         <p class="section-kicker">01 · EARLY FAILURE PREDICTION</p>
-        <h2>1단계: 센서 데이터로 ‘30분 안에 고장이 발생하는지’ 예측</h2>
+        <h2>1단계: 센서 데이터 기반 고장 발생 예측</h2>
         <p>
-          첫 번째로 분석한 대상은 냉각계통의 압력이 기준 아래로 떨어지는
-          <strong>압력 저하 고장(데이터셋 명칭 F3)</strong>이었다.
+          첫 번째로 분석한 대상은 공식 Challenge의 고장 유형 중 하나인
+          <strong>FlowCool Pressure Dropped Below Limit(압력 저하 고장)</strong>이었다.
           설비가 고장 난 뒤 원인을 찾는 것이 아니라, 고장 전에 나타나는 센서 변화를 이용해
           미리 위험을 감지할 수 있는지 확인했다.
         </p>
         <p>
-          첫 문제는 회귀가 아니라 이진 분류였다. 현재까지의 설비 상태를 보고
-          <strong>앞으로 30분 안에 F3가 발생하는지</strong>를 0/1로 예측하는 방식이다.
+          먼저 현재까지의 설비 상태를 보고
+          <strong>설정한 시간 범위 안에 압력 저하 고장이 발생하는지</strong>를 0/1로 분류했다.
+          예측 범위는 이후 10분·15분·30분을 비교해 결정했다.
         </p>
 
         <h3>현재 센서값뿐 아니라 ‘변화 추세’까지 모델에 입력</h3>
@@ -671,7 +820,7 @@
           </table>
         </div>
 
-        <h3>실제 Test 결과: 신호는 있었지만 경보용으로는 부족</h3>
+        <h3>Test 결과: 조기 경보 성능 제한</h3>
         <p>
           Threshold도 Test에서 맞추지 않고 Validation에서 F1이 가장 높도록 먼저 정했다.
           고정된 모델과 threshold를 Test에 한 번 적용했다.
@@ -718,8 +867,10 @@
           false positive도 1,379개였다.
         </p>
         <div class="plain-note">
-          이 시점의 결론은 “예측이 됐다”보다
-          <strong>“신호는 있지만 이 상태로는 경보 모델이라고 보기 어렵다”</strong>에 가까웠다.
+          <span class="box-label">1단계 결과</span>
+          · Random 대비 예측 신호 확인<br>
+          · Precision 1.85%, Recall 4.82%<br>
+          · 실제 경보 모델로 활용하기에는 성능 제한
         </div>
 
         <details>
@@ -732,7 +883,7 @@
           </div>
         </details>
 
-        <h3 id="f3-shift">성능이 낮은 이유가 모델이 아니라 데이터 변화 때문인지 점검</h3>
+        <h3 id="f3-shift">성능 저하 원인 점검: 시간에 따른 데이터 분포 변화</h3>
         <p>
           모델을 더 튜닝하기 전에 데이터 자체가 달라진 것은 아닌지 확인했다.
           과거의 정상 운전 데이터와 미래의 정상 운전 데이터만 가져와
@@ -767,25 +918,25 @@
         <p>
           정상 상태 자체의 센서 분포가 시기별로 달랐다. Flow와 pressure 관계를 Train 정상 데이터로
           학습했을 때도 Validation 정상 구간에 학습 시기에서 보기 어려웠던 운전영역이 섞여 있었다.
-          즉 F3의 약한 Test 성능을 단순히 XGBoost 파라미터 문제로만 보기 어려웠다.
+          즉 압력 저하 고장의 약한 Test 성능을 단순히 XGBoost 파라미터 문제로만 보기 어려웠다.
         </p>
 
         <div class="turn">
-          <span class="turn-label">왜 다음 단계로 바꿨나</span>
-          <p>
-            F3를 계속 튜닝하기보다 문제 정의를 다시 보기로 했다.
-            다음 단계에서는 선행연구에서 RUL을 직접 예측한 다른 failure mode인 F2를 대상으로,
-            논문의 pipeline을 가능한 범위에서 따라가 보기로 했다.
-          </p>
+          <span class="turn-label">전환 이유</span>
+          <ul class="compact-list">
+            <li>압력 저하 고장 조기예측 성능 제한</li>
+            <li>시간에 따른 정상 데이터 분포 변화 확인</li>
+            <li>압력 과다 고장 대상 RUL 예측 문제로 확장</li>
+          </ul>
         </div>
       </section>
 
       <section id="track-b">
         <p class="section-kicker">02 · REMAINING LIFE PREDICTION</p>
-        <h2>2단계: ‘고장까지 남은 시간’을 직접 예측</h2>
+        <h2>2단계: 고장까지 남은 시간(RUL) 예측</h2>
         <p>
-          두 번째로는 냉각 압력이 지나치게 높아지는
-          <strong>압력 과다 고장(데이터셋 명칭 F2)</strong>을 대상으로 했다.
+          두 번째로는 공식 Challenge의 또 다른 고장 유형인
+          <strong>Flowcool Pressure Too High Check Flowcool Pump(압력 과다 고장)</strong>을 대상으로 했다.
           이번에는 단순히 “고장/정상”을 나누는 대신,
           설비가 고장 나기까지 남은 시간을 숫자로 예측하는 문제로 바꿨다.
         </p>
@@ -794,9 +945,16 @@
           <strong>현재 시점에서 고장까지 얼마나 시간이 남았는지</strong>를 직접 예측했다.
           이 남은 시간을 RUL(Remaining Useful Life)이라고 부른다.
         </p>
+        <div class="inline-citation">
+          <strong>참고 논문</strong> · S. Wu, Y. Jiang, H. Luo, S. Yin,
+          “Remaining useful life prediction for ion etching machine cooling system using deep recurrent neural network-based approaches,”
+          <em>Control Engineering Practice</em>, 109, 104748, 2021.
+          · <a href="https://doi.org/10.1016/j.conengprac.2021.104748"
+               target="_blank" rel="noopener noreferrer">DOI ↗</a>
+        </div>
         <p>
           20개 Tool의 fault event를 먼저 확인했고, 선행논문의 예시 장비인
-          <code>01_M02</code>에는 F2 fault event가 40개 있었다.
+          <code>01_M02</code>에는 해당 fault event가 40개 있었다.
         </p>
         <p>
           하지만 <code>FIXTURESHUTTERPOSITION = 1</code>인 운전상태로 제한하고 TTF와 연결하자
@@ -806,7 +964,7 @@
 
         <h3>정상적인 유량–압력 관계에서 벗어나는 정도를 추가 정보로 생성</h3>
         <p>
-          선행연구에서는 정상 상태라면 FlowCool 유량과 압력 사이에 일정한 관계가 있을 것이라고 보고,
+          참고 논문에서는 정상 상태라면 FlowCool 유량과 압력 사이에 일정한 관계가 있을 것이라고 보고,
           유량으로부터 <strong>정상적으로 예상되는 압력</strong>을 MLP로 계산한다.
           여기서 MLP는 입력과 출력 사이의 비선형 관계를 학습하는 간단한 신경망이다.
         </p>
@@ -835,7 +993,7 @@
         <p>
           다음 단계에서는 Random Forest(RF)로 정상 상태와 고장에 가까운 상태를 분류했다.
           Random Forest는 여러 개의 decision tree를 묶어 예측하는 모델이다.
-          논문의 F2 ×1000 oversampling은 계산량 때문에 class weight로 근사했다.
+          참고 논문의 해당 fault ×1000 oversampling은 계산량 때문에 class weight로 근사했다.
         </p>
         <p>
           OOB(Out-of-Bag)는 각 tree 학습에 사용되지 않은 샘플로 내부 검증을 하는 방식이다.
@@ -852,7 +1010,7 @@
         <h3>경고가 발생한 뒤의 센서 흐름으로 고장까지 남은 시간 예측</h3>
         <p>
           Warning 이후 60개 sample을 하나의 sequence로 만들고,
-          선행연구와 같은 2-layer GRU, 64 nodes/layer 구조로 RUL을 예측했다.
+          참고 논문과 같은 2-layer GRU, 64 nodes/layer 구조로 RUL을 예측했다.
           Original 16개 feature와 residual을 추가한 17개 feature를 비교했다.
         </p>
 
@@ -878,7 +1036,7 @@
         </div>
 
         <p>
-          Original GRU의 숫자는 매우 좋았지만, 선행연구에서 기대했던 residual 추가 성능 개선은 재현되지 않았다.
+          Original GRU의 숫자는 매우 좋았지만, 참고 논문에서 보고된 residual 추가 성능 개선은 재현되지 않았다.
           이보다 더 중요한 문제는 window split 자체에서 발견됐다.
         </p>
 
@@ -918,28 +1076,29 @@
           같은 fault trajectory의 인접 조각들이 Train과 Test에 함께 들어가 있었다.
         </p>
         <div class="plain-note">
-          쉽게 말하면, <strong>시험문제에 학습 때 이미 본 내용이 거의 그대로 섞여 있던 셈</strong>이다.
-          따라서 RMSE 31초라는 좋은 숫자를 “새로운 고장도 잘 예측했다”는 근거로 사용할 수 없었다.
+          <span class="box-label">평가 문제</span>
+          · Test raw row의 99.67%가 Train에도 포함<br>
+          · 학습 때 본 데이터와 사실상 중복<br>
+          · RMSE 31초를 새로운 고장 일반화 성능으로 해석하기 어려움
         </div>
 
         <div class="turn">
-          <span class="turn-label">왜 다음 단계로 바꿨나</span>
-          <p>
-            31초라는 RMSE는 좋아 보였지만, 이 평가 구조에서는
-            “새로운 고장을 예측하는 성능”이라고 부르기 어려웠다.
-            다음 실험에서는 모델보다 먼저
-            <strong>같은 fault event의 데이터가 Train과 Test에 절대로 같이 들어가지 않는 조건</strong>을 고정했다.
-          </p>
+          <span class="turn-label">전환 이유</span>
+          <ul class="compact-list">
+            <li>Window 기준 random split의 데이터 중복 확인</li>
+            <li>좋은 수치와 실제 일반화 성능 구분 필요</li>
+            <li>고장 사례 단위 Train/Test 분리로 평가 방식 재설계</li>
+          </ul>
         </div>
       </section>
 
       <section id="track-a">
         <p class="section-kicker">03 · STRICT RE-EVALUATION</p>
-        <h2>3단계: 학습에서 보지 않은 ‘새로운 고장 사례’만으로 다시 검증</h2>
+        <h2>3단계: 새로운 고장 사례 기반 성능 재검증</h2>
 
         <h3>모델 성능을 보기 전에 분석 대상 설비부터 고정</h3>
         <p>
-          F2 event가 비교적 많은 6개 Tool에 같은 FSP=1 availability audit을 적용했다.
+          압력 과다 고장 event가 비교적 많은 6개 Tool에 같은 FSP=1 availability audit을 적용했다.
           단순 fault 수가 아니라 Normal과 Fault 구간을 모두 갖는 usable trajectory 수로 순위를 정했다.
         </p>
 
@@ -1021,12 +1180,11 @@
         </div>
 
         <div class="plain-note">
-          Test의 두 고장에서 만들어진 window 수가 서로 다르기 때문에,
-          window가 많은 고장이 평가를 지배하지 않도록 <strong>각 fault event에 같은 가중치</strong>를 주어
-          RMSE를 평균한 값을 event-balanced RMSE로 사용했다.
-          이 기준에서 <strong>543.82 s → 203.85 s</strong>,
-          Train-median baseline 대비 <strong>62.52% 감소</strong>했다.
-          이것을 “정확도가 62.5% 향상됐다”고 표현하지는 않았다.
+          <span class="box-label">Strict Test 결과</span>
+          · 각 고장 사례에 동일 가중치 적용<br>
+          · Event-balanced RMSE: 543.82 s → 203.85 s<br>
+          · Train-median baseline 대비 RMSE 62.52% 감소<br>
+          · 독립 Test 고장 2건 → 소규모 검증 결과로 해석
         </div>
         <p>
           쉽게 보면, 아무 센서도 보지 않고 항상 같은 시간을 예측하는 기준모델보다
@@ -1036,7 +1194,7 @@
 
         <figure class="figure">
           <img src="images/cell77a_strict_gru_rul.png"
-               alt="완전히 분리된 두 미래 F2 fault event에서 실제 RUL과 GRU 예측을 비교한 그래프" />
+               alt="완전히 분리된 두 미래 pressure-high fault event에서 실제 RUL과 GRU 예측을 비교한 그래프" />
           <figcaption>
             Cell 77A · Strict unseen-event Test의 실제 출력. 두 독립 미래 fault event를 이어서 표시했다.
             Sliding window는 event 내부에서 겹치므로 361개 window를 361개의 독립 사례로 해석하지 않는다.
@@ -1086,7 +1244,7 @@
 
       <section id="features">
         <p class="section-kicker">04 · MODEL INTERPRETATION</p>
-        <h2>4단계: AI가 어떤 센서 정보를 주로 활용했는지 확인</h2>
+        <h2>4단계: 모델의 센서 변수 의존도 확인</h2>
         <p>
           마지막에는 모델을 더 학습하지 않고 그대로 고정한 뒤,
           입력 feature를 하나씩 가려보는 <strong>feature occlusion</strong>을 했다.
@@ -1126,14 +1284,16 @@
         </p>
 
         <div class="plain-note">
-          단변량에서 고장 전에 크게 변하는 변수, 여러 변수를 함께 쓰는 모델이 예측에 의존하는 변수,
-          그리고 실제 고장의 물리적 원인은 서로 다른 질문이다.
+          <span class="box-label">해석 범위</span>
+          · 고장 전 변화가 큰 변수 ≠ 모델이 많이 사용하는 변수<br>
+          · 모델 의존도가 높은 변수 ≠ 실제 고장의 물리적 원인<br>
+          · 인과관계가 아닌 모델·데이터 수준의 연관성으로 해석
         </div>
       </section>
 
       <section id="end">
         <p class="section-kicker">CONCLUSION</p>
-        <h2>프로젝트 결과: 고장 예측 모델보다 ‘믿을 수 있는 평가’를 만드는 데 초점을 맞췄다</h2>
+        <h2>프로젝트 결과 및 해석</h2>
         <p>
           처음에는 XGBoost로 고장을 조금이라도 더 잘 맞히는 것이 목표였다.
           센서값에 temporal feature를 추가하고, class weight를 바꾸고, prediction horizon을 비교하고,
@@ -1161,8 +1321,26 @@
         </div>
 
         <div class="footnotes">
-          <p><strong>데이터:</strong> PHM Society 2018 Data Challenge, Ion Mill Etch equipment.</p>
-          <p><strong>참고 방법:</strong> Wu, Jiang, Luo, Yin, “Remaining useful life prediction for ion etching machine cooling system using deep recurrent neural network-based approaches,” Control Engineering Practice, 2021.</p>
+          <p>
+            <strong>데이터 출처:</strong>
+            PHM Society, <em>2018 PHM Data Challenge — Ion Mill Etch</em>.
+            본 프로젝트에서 사용한 공개 데이터의 원 출처.
+            <a href="https://phmsociety.org/conference/annual-conference-of-the-phm-society/annual-conference-of-the-prognostics-and-health-management-society-2018-b/phm-data-challenge-6/"
+               target="_blank" rel="noopener noreferrer" style="text-decoration:underline;text-underline-offset:3px;">공식 페이지</a>
+          </p>
+          <p>
+            <strong>활용 방식:</strong>
+            2018년 Challenge 참가 결과가 아니라, 공개된 과거 데이터셋을 활용해 별도로 수행한 개인 분석 프로젝트.
+          </p>
+          <p>
+            <strong>참고 논문:</strong>
+            S. Wu, Y. Jiang, H. Luo, and S. Yin,
+            “Remaining useful life prediction for ion etching machine cooling system using deep recurrent neural network-based approaches,”
+            <em>Control Engineering Practice</em>, vol. 109, 104748, 2021.
+            DOI:
+            <a href="https://doi.org/10.1016/j.conengprac.2021.104748"
+               target="_blank" rel="noopener noreferrer" style="text-decoration:underline;text-underline-offset:3px;">10.1016/j.conengprac.2021.104748</a>
+          </p>
           <p><strong>해석 범위:</strong> 최종 Track A의 RUL은 TTF &lt; 2000 s 구간에 한정되며, strict Test의 독립 미래 fault event는 평가 가능한 2건이다.</p>
           <p><strong>변수 해석:</strong> SHAP / RF importance / occlusion은 모델 또는 데이터와의 연관성을 보여줄 뿐 고장의 인과 원인을 입증하지 않는다.</p>
         </div>
