@@ -161,6 +161,40 @@
       letter-spacing:-.02em;
     }
 
+    .glossary{
+      margin:30px 0 38px;
+      padding:22px 24px 8px;
+      background:var(--paper);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+    }
+    .glossary-title{
+      margin:0 0 15px;
+      font-size:15px;
+      font-weight:760;
+      letter-spacing:-.015em;
+    }
+    .glossary-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:0 26px;
+    }
+    .term{
+      padding:12px 0 14px;
+      border-top:1px solid var(--line);
+    }
+    .term strong{
+      display:block;
+      margin-bottom:3px;
+      font-size:14px;
+    }
+    .term span{
+      color:#596671;
+      font-size:13px;
+      line-height:1.7;
+    }
+
     .timeline{
       margin:34px 0 0;
       border-top:1px solid var(--line-strong);
@@ -350,6 +384,7 @@
       .shell{padding:34px 20px 72px}
       .figure-grid{grid-template-columns:1fr}
       .metric-row{grid-template-columns:1fr}
+      .glossary-grid{grid-template-columns:1fr}
       .timeline-row{grid-template-columns:1fr;gap:5px}
       h2{font-size:27px}
       h3{font-size:20px}
@@ -365,8 +400,9 @@
       <h1>PHM 2018 Ion Mill Etch 데이터로<br>설비 고장 예측을 시도한 기록</h1>
       <p class="hero-lead">
         센서 데이터로 고장을 미리 예측해보는 것에서 시작해,
-        결과가 왜 흔들리는지 확인하고, 선행연구를 재현해보고,
+        결과가 왜 흔들리는지 확인하고, 선행연구의 방법을 따라가 보고,
         마지막에는 고장 사례 자체를 분리하는 평가 방식으로 다시 설계한 과정.
+        전문용어는 그대로 쓰되, 처음 등장할 때 의미를 함께 적었다.
       </p>
       <div class="meta">
         <span>Ion Mill Etch</span>
@@ -406,6 +442,36 @@
           “현재까지의 센서 데이터를 보고, 가까운 미래에 설비 고장이 발생할지 미리 알 수 있을까?”
         </div>
 
+        <div class="glossary">
+          <p class="glossary-title">이 페이지에서 자주 나오는 용어</p>
+          <div class="glossary-grid">
+            <div class="term">
+              <strong>F2 / F3</strong>
+              <span>PHM 2018 데이터에서 구분되는 서로 다른 냉각계통 고장 유형. 여기서는 F2를 압력 과다 고장, F3를 압력 저하 고장으로 부른다.</span>
+            </div>
+            <div class="term">
+              <strong>TTF / RUL</strong>
+              <span>현재 시점에서 고장까지 남은 시간. 원본 데이터에서는 TTF(Time to Failure), 예측 문제에서는 RUL(Remaining Useful Life)이라는 표현을 주로 쓴다.</span>
+            </div>
+            <div class="term">
+              <strong>Temporal feature</strong>
+              <span>현재 센서값만 보는 대신 이전 값, 변화량, 이동평균처럼 시간에 따른 변화를 입력으로 만든 변수.</span>
+            </div>
+            <div class="term">
+              <strong>PR-AUC</strong>
+              <span>고장처럼 양성 사례가 매우 적은 불균형 데이터에서 precision-recall 성능을 요약하는 지표. 높을수록 고장 사례를 구분하는 능력이 좋다.</span>
+            </div>
+            <div class="term">
+              <strong>Distribution shift</strong>
+              <span>학습할 때 본 데이터와 이후 평가 데이터의 분포가 달라지는 현상. 같은 ‘정상’ 상태라도 시기나 운전조건에 따라 센서 분포가 달라질 수 있다.</span>
+            </div>
+            <div class="term">
+              <strong>Strict unseen-event evaluation</strong>
+              <span>같은 고장 사례에서 잘라낸 데이터가 Train과 Test에 동시에 들어가지 않도록, 고장 한 건 전체를 하나의 단위로 분리해 평가하는 방식.</span>
+            </div>
+          </div>
+        </div>
+
         <p>
           처음부터 하나의 방법을 정해둔 것은 아니었다. XGBoost로 조기예측을 시도했고,
           결과가 생각보다 약하자 시간에 따른 데이터 분포를 확인했다. 이후 선행연구의 RUL 예측
@@ -434,17 +500,27 @@
 
       <section id="f3">
         <p class="section-kicker">01 · FIRST DIRECTION</p>
-        <h2>F3 고장을 30분 전에 예측해보기</h2>
+        <h2>냉각 압력 저하 고장(F3)을 30분 전에 예측해보기</h2>
         <p>
           처음 대상으로 잡은 고장은 <strong>FlowCool Pressure Dropped Below Limit</strong>였다.
-          현재 센서 상태를 보고 일정 시간 안에 해당 고장이 발생할지를 분류하는 문제로 시작했다.
+          냉각계통의 압력이 설정된 하한 아래로 떨어지는 고장 유형이고, 이 페이지에서는 이후 편의상
+          <strong>F3</strong>라고 적는다.
+        </p>
+        <p>
+          첫 문제는 회귀가 아니라 이진 분류였다. 현재까지의 설비 상태를 보고
+          <strong>앞으로 30분 안에 F3가 발생하는지</strong>를 0/1로 예측하는 방식이다.
         </p>
 
         <h3>센서값만 보던 모델에서 temporal feature까지</h3>
         <p>
-          처음에는 현재 센서값만 XGBoost에 넣었다. 이후 rolling, lag, derivative 같은
-          시간 이력 feature를 추가했다. 기본 모델의 Validation PR-AUC는 0.01319였고,
-          temporal feature를 추가한 뒤 0.01663까지 올라갔다.
+          처음에는 현재 시점의 센서값만 XGBoost에 넣었다. 이후 이전 센서값(lag),
+          일정 구간의 통계값(rolling), 변화량(derivative)처럼
+          <strong>시간에 따른 변화를 표현한 temporal feature</strong>를 추가했다.
+        </p>
+        <p>
+          평가에는 PR-AUC를 사용했다. 전체 데이터 중 고장 직전 샘플의 비율이 매우 낮기 때문에
+          단순 accuracy보다 precision과 recall의 균형을 보는 PR-AUC가 더 적합하다고 봤다.
+          기본 모델의 Validation PR-AUC는 0.01319였고, temporal feature를 추가한 뒤 0.01663까지 올라갔다.
         </p>
 
         <div class="table-wrap">
@@ -566,9 +642,16 @@
 
         <h3 id="f3-shift">데이터 자체가 시간에 따라 달라지는 건 아닐까</h3>
         <p>
-          모델을 더 튜닝하기 전에, 과거 정상 운전 구간과 미래 정상 운전 구간을 구분하는
-          별도의 domain classifier를 만들었다. 고장을 맞히는 모델이 아니라
-          <strong>정상 데이터가 어느 시기에 측정된 것인지</strong>를 맞히는 모델이다.
+          모델을 더 튜닝하기 전에 데이터 자체가 달라진 것은 아닌지 확인했다.
+          과거의 정상 운전 데이터와 미래의 정상 운전 데이터만 가져와
+          <strong>두 시기를 서로 구분하는 별도의 분류 모델(domain classifier)</strong>을 만들었다.
+          고장을 맞히는 모델이 아니라 정상 데이터가 어느 시기에 측정된 것인지를 맞히는 모델이다.
+        </p>
+        <p>
+          두 시기를 쉽게 구분할 수 있다면, 모델 성능 저하의 원인이 단순한 파라미터 문제가 아니라
+          시간에 따른 운전조건 변화, 즉 <strong>distribution shift</strong>일 가능성을 의심할 수 있다.
+          어떤 변수가 이 구분에 기여했는지는 <strong>SHAP</strong>으로 확인했다.
+          SHAP은 모델의 출력이 어떤 입력변수에 의해 얼마나 달라졌는지를 해석하는 방법이다.
         </p>
 
         <div class="figure-grid">
@@ -607,9 +690,18 @@
 
       <section id="track-b">
         <p class="section-kicker">02 · SECOND DIRECTION</p>
-        <h2>F2 RUL 예측을 선행연구 방식으로 따라가보기</h2>
+        <h2>냉각 압력 과다 고장(F2)의 RUL 예측을 따라가보기</h2>
         <p>
-          다음 대상은 <strong>Flowcool Pressure Too High Check Flowcool Pump</strong>, 이하 F2였다.
+          다음 대상은 <strong>Flowcool Pressure Too High Check Flowcool Pump</strong>였다.
+          냉각 압력이 지나치게 높아져 pump 상태를 점검해야 하는 고장 유형이고,
+          이후에는 <strong>F2</strong>라고 적는다.
+        </p>
+        <p>
+          여기서는 “곧 고장이 발생하는가”를 맞히는 분류 문제 대신,
+          <strong>현재 시점에서 고장까지 얼마나 시간이 남았는지</strong>를 직접 예측했다.
+          이 남은 시간을 RUL(Remaining Useful Life)이라고 부른다.
+        </p>
+        <p>
           20개 Tool의 fault event를 먼저 확인했고, 선행논문의 예시 장비인
           <code>01_M02</code>에는 F2 fault event가 40개 있었다.
         </p>
@@ -621,9 +713,14 @@
 
         <h3>Flow와 Pressure 관계에서 residual 만들기</h3>
         <p>
-          선행연구의 방식대로 정상 상태에서 <code>FLOWCOOLFLOWRATE</code>로
-          expected <code>FLOWCOOLPRESSURE</code>를 예측한 뒤
-          <code>residual = predicted pressure − actual pressure</code>를 만들었다.
+          선행연구에서는 정상 상태라면 FlowCool 유량과 압력 사이에 일정한 관계가 있을 것이라고 보고,
+          유량으로부터 <strong>정상적으로 예상되는 압력</strong>을 MLP로 계산한다.
+          여기서 MLP는 입력과 출력 사이의 비선형 관계를 학습하는 간단한 신경망이다.
+        </p>
+        <p>
+          예상 압력과 실제 압력의 차이를 <strong>residual(잔차)</strong>로 두었다.
+          <code>residual = predicted pressure − actual pressure</code>.
+          이 차이가 커지면 정상적인 유량-압력 관계에서 벗어난 상태일 가능성이 있다는 아이디어다.
         </p>
 
         <figure class="figure">
@@ -643,8 +740,12 @@
 
         <h3>RF health assessment와 degradation warning</h3>
         <p>
-          Normal/Fault 분류에는 100-tree Random Forest를 사용했다.
+          다음 단계에서는 Random Forest(RF)로 정상 상태와 고장에 가까운 상태를 분류했다.
+          Random Forest는 여러 개의 decision tree를 묶어 예측하는 모델이다.
           논문의 F2 ×1000 oversampling은 계산량 때문에 class weight로 근사했다.
+        </p>
+        <p>
+          OOB(Out-of-Bag)는 각 tree 학습에 사용되지 않은 샘플로 내부 검증을 하는 방식이다.
           Train/OOB에서는 Original과 +Residual 모델 모두 거의 완벽한 결과가 나왔고,
           residual은 17개 feature 중 RF importance 5위였다.
         </p>
@@ -690,8 +791,14 @@
 
         <h3 id="overlap">너무 잘 나오는 결과를 다시 확인하기</h3>
         <p>
-          60-sample sliding window를 stride 1로 만들면 첫 window가 1~60,
-          다음 window가 2~61처럼 거의 같은 원본 row를 공유한다.
+          GRU는 한 시점의 센서값 하나가 아니라 최근 여러 시점의 흐름을 한 번에 본다.
+          그래서 연속된 60개 측정값을 하나의 입력으로 묶는
+          <strong>sliding window</strong>를 만들었다.
+        </p>
+        <p>
+          문제는 stride를 1로 두면 첫 window가 1~60번째 측정값,
+          다음 window가 2~61번째 측정값이 된다는 점이다.
+          두 입력은 60개 중 59개를 공유한다.
           window 단위 random split을 한 뒤 원본 row 기준으로 다시 계산했다.
         </p>
 
@@ -731,7 +838,7 @@
 
       <section id="track-a">
         <p class="section-kicker">03 · THIRD DIRECTION</p>
-        <h2>고장 사례 자체를 완전히 분리해서 다시 평가하기</h2>
+        <h2>같은 고장 사례가 섞이지 않도록 평가 방법 다시 설계하기</h2>
 
         <h3>성능을 보기 전에 Tool부터 고정</h3>
         <p>
@@ -761,6 +868,10 @@
         </p>
 
         <h3>fault event를 시간순으로 분리</h3>
+        <p>
+          여기서부터 평가 단위를 window가 아니라 <strong>fault event 한 건 전체</strong>로 바꿨다.
+          같은 고장 사례에서 잘라낸 데이터가 Train과 Test 양쪽에 동시에 들어가지 않도록 하기 위해서다.
+        </p>
         <p>
           11개의 usable trajectory를 발생 순서대로
           <strong>Train 7 / Validation 1 / Test 3</strong>으로 고정했다.
@@ -813,7 +924,10 @@
         </div>
 
         <div class="plain-note">
-          Event-balanced RMSE 기준으로 <strong>543.82 s → 203.85 s</strong>,
+          Test의 두 고장에서 만들어진 window 수가 서로 다르기 때문에,
+          window가 많은 고장이 평가를 지배하지 않도록 <strong>각 fault event에 같은 가중치</strong>를 주어
+          RMSE를 평균한 값을 event-balanced RMSE로 사용했다.
+          이 기준에서 <strong>543.82 s → 203.85 s</strong>,
           Train-median baseline 대비 <strong>62.52% 감소</strong>했다.
           이것을 “정확도가 62.5% 향상됐다”고 표현하지는 않았다.
         </div>
@@ -872,9 +986,14 @@
         <p class="section-kicker">04 · AFTER THE MODEL</p>
         <h2>마지막으로 모델이 무엇을 보고 있었는지 확인하기</h2>
         <p>
-          모델을 더 학습하지 않고 그대로 고정한 뒤, Test sequence에서 입력 feature를 하나씩
-          Train 평균값으로 가렸다. 해당 feature를 없앴을 때 event-balanced RMSE가 얼마나 바뀌는지를 봤다.
-          이 결과는 <strong>모델 의존도</strong>이지 물리적 인과관계가 아니다.
+          마지막에는 모델을 더 학습하지 않고 그대로 고정한 뒤,
+          입력 feature를 하나씩 가려보는 <strong>feature occlusion</strong>을 했다.
+          특정 센서를 Train 평균값으로 바꿨을 때 오차가 크게 증가한다면,
+          현재 GRU가 그 센서의 정보에 많이 의존하고 있다는 뜻이다.
+        </p>
+        <p>
+          따라서 이 결과는 <strong>모델 의존도</strong>를 보여줄 뿐,
+          해당 센서가 고장의 물리적 원인이라는 뜻은 아니다.
         </p>
 
         <div class="table-wrap">
@@ -925,8 +1044,8 @@
         </p>
         <p>
           마지막에는 모델을 더 복잡하게 만드는 대신 평가 조건부터 고정했다.
-          같은 고장 사례가 학습과 시험에 함께 들어가지 않도록 나누고,
-          모델을 보기 전에 Tool과 horizon, sequence length를 정한 뒤 다시 실험했다.
+          같은 고장 사례가 학습과 시험에 함께 들어가지 않도록 event 단위로 나누고,
+          모델을 보기 전에 Tool, 예측 범위(horizon), 입력 길이(sequence length)를 정한 뒤 다시 실험했다.
         </p>
         <p>
           작은 규모이지만 완전히 분리된 두 미래 fault trajectory 모두에서
